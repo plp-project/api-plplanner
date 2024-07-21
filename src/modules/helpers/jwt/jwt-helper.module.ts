@@ -14,6 +14,6 @@ export class JwtHelper {
 
 @Module({
   providers: [JwtHelper],
-  exports: [JwtHelper],
+  exports: [JwtHelper]
 })
 export class JwtHelperModule {}

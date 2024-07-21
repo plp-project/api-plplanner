@@ -10,7 +10,7 @@ import { TypeORMConfig } from 'src/config/database';
     AuthModule,
     UserModule,
     HelpersModule,
-    TypeOrmModule.forRoot(TypeORMConfig),
-  ],
+    TypeOrmModule.forRootAsync(TypeORMConfig)
+  ]
 })
 export class ApiModule {}

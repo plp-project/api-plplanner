@@ -8,10 +8,8 @@ import { AuthService } from '../auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('')
-  @ApiOperation({
-    summary: 'Login',
-  })
+  @Post('login')
+  @ApiOperation({ summary: 'User login' })
   async login(@Body() body: LoginDTO): Promise<string> {
     return await this.authService.login(body);
   }
