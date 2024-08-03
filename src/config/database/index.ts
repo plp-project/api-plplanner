@@ -14,5 +14,8 @@ export const TypeORMConfig: TypeOrmModuleAsyncOptions = {
     migrationsRun: true,
     migrationsTableName: 'migrations_TypeORM',
     migrationsTransactionMode: 'all'
+    // logging: true
+    // logger: 'advanced-console'
+    // dropSchema: true
   })
 };

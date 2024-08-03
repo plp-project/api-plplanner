@@ -8,7 +8,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { IUserEntity } from '../../infrastructure/model/interface';
 
-export class CreateUserDTO implements IUserEntity {
+export class CreateUserDTO implements Partial<IUserEntity> {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()

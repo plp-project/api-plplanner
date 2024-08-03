@@ -11,15 +11,15 @@ export class UserEntity implements IUserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 255 })
   name: string;
 
-  @Column()
+  @Column({ length: 255, unique: true })
   email: string;
 
-  @Column()
+  @Column({ length: 255 })
   password: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 }
