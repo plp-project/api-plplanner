@@ -1,37 +1,41 @@
 import { Injectable, Module } from '@nestjs/common';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { UserEntity } from './model';
+import { ReminderEntity } from './model';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
-import { IUserEntity } from './model/interface';
+import { IReminderEntity } from './model/interface';
 
 @Injectable()
-export class UserRepository {
+export class ReminderRepository {
   constructor(
-    @InjectRepository(UserEntity)
-    private repository: Repository<UserEntity>
+    @InjectRepository(ReminderEntity)
+    private repository: Repository<ReminderEntity>
   ) {}
 
-  async create(payload: IUserEntity): Promise<UserEntity> {
+  async create(payload: IReminderEntity): Promise<ReminderEntity> {
     const user = this.repository.create(payload);
     return this.repository.save(user);
   }
 
-  async find(where?: FindOptionsWhere<UserEntity>): Promise<UserEntity[]> {
+  async find(
+    where?: FindOptionsWhere<ReminderEntity>
+  ): Promise<ReminderEntity[]> {
     return this.repository.find({ where });
   }
 
-  async findOne(where: FindOptionsWhere<UserEntity>): Promise<UserEntity> {
+  async findOne(
+    where: FindOptionsWhere<ReminderEntity>
+  ): Promise<ReminderEntity> {
     return this.repository.findOne({ where });
   }
 
-  async exists(where?: FindOptionsWhere<UserEntity>): Promise<boolean> {
+  async exists(where?: FindOptionsWhere<ReminderEntity>): Promise<boolean> {
     return this.repository.exists({ where });
   }
 
   async updateById(
     id: number,
-    payload: Partial<IUserEntity>
-  ): Promise<UserEntity> {
+    payload: Partial<IReminderEntity>
+  ): Promise<ReminderEntity> {
     const res = await this.repository.update(id, payload);
     if (res.affected && res.affected > 0) {
       return await this.repository.findOne({ where: { id } });
@@ -46,8 +50,8 @@ export class UserRepository {
 }
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
-  providers: [UserRepository],
-  exports: [UserRepository]
+  imports: [TypeOrmModule.forFeature([ReminderEntity])],
+  providers: [ReminderRepository],
+  exports: [ReminderRepository]
 })
-export class UserRepositoryModule {}
+export class PlanningRepositoryModule {}

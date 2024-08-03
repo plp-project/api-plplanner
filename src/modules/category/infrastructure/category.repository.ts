@@ -1,37 +1,41 @@
 import { Injectable, Module } from '@nestjs/common';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { UserEntity } from './model';
+import { CategoryEntity } from './model';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
-import { IUserEntity } from './model/interface';
+import { ICategoryEntity } from './model/interface';
 
 @Injectable()
-export class UserRepository {
+export class CategoryRepository {
   constructor(
-    @InjectRepository(UserEntity)
-    private repository: Repository<UserEntity>
+    @InjectRepository(CategoryEntity)
+    private repository: Repository<CategoryEntity>
   ) {}
 
-  async create(payload: IUserEntity): Promise<UserEntity> {
+  async create(payload: ICategoryEntity): Promise<CategoryEntity> {
     const user = this.repository.create(payload);
     return this.repository.save(user);
   }
 
-  async find(where?: FindOptionsWhere<UserEntity>): Promise<UserEntity[]> {
+  async find(
+    where?: FindOptionsWhere<CategoryEntity>
+  ): Promise<CategoryEntity[]> {
     return this.repository.find({ where });
   }
 
-  async findOne(where: FindOptionsWhere<UserEntity>): Promise<UserEntity> {
+  async findOne(
+    where: FindOptionsWhere<CategoryEntity>
+  ): Promise<CategoryEntity> {
     return this.repository.findOne({ where });
   }
 
-  async exists(where?: FindOptionsWhere<UserEntity>): Promise<boolean> {
+  async exists(where?: FindOptionsWhere<CategoryEntity>): Promise<boolean> {
     return this.repository.exists({ where });
   }
 
   async updateById(
     id: number,
-    payload: Partial<IUserEntity>
-  ): Promise<UserEntity> {
+    payload: Partial<ICategoryEntity>
+  ): Promise<CategoryEntity> {
     const res = await this.repository.update(id, payload);
     if (res.affected && res.affected > 0) {
       return await this.repository.findOne({ where: { id } });
@@ -46,8 +50,8 @@ export class UserRepository {
 }
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
-  providers: [UserRepository],
-  exports: [UserRepository]
+  imports: [TypeOrmModule.forFeature([CategoryEntity])],
+  providers: [CategoryRepository],
+  exports: [CategoryRepository]
 })
-export class UserRepositoryModule {}
+export class CategoryRepositoryModule {}
