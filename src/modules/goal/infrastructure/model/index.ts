@@ -20,16 +20,16 @@ export class GoalEntity implements IGoalEntity {
   @Column({ type: 'enum', enum: categories })
   type: categories;
 
-  @Column()
-  categoryId: number;
-
   @Column({ type: 'enum', enum: goalStatus })
   status: goalStatus;
 
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToOne(() => CategoryEntity, (category) => category.id)
-  @JoinColumn({ referencedColumnName: 'id' })
+  @Column()
+  categoryId: number;
+
+  @OneToOne(() => CategoryEntity)
+  @JoinColumn()
   category: CategoryEntity;
 }

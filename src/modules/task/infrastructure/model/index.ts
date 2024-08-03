@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { durations, ITaskEntity, taskStatus } from './interface';
 import { CategoryEntity } from 'src/modules/category/infrastructure/model';
+import { PlanningEntity } from 'src/modules/planning/infrastructure/model';
 
 @Entity({ name: 'task' })
 export class TaskEntity implements ITaskEntity {
@@ -31,15 +32,15 @@ export class TaskEntity implements ITaskEntity {
   createdAt: Date;
 
   @Column()
-  planningId: number;
-
-  @Column()
   categoryId: number;
 
   @OneToOne(() => CategoryEntity)
   @JoinColumn()
   category?: CategoryEntity;
 
-  @ManyToOne(() => CategoryEntity)
-  planning?: CategoryEntity;
+  @Column()
+  planningId: number;
+
+  @ManyToOne(() => PlanningEntity, (planning) => planning.tasks)
+  planning?: PlanningEntity;
 }

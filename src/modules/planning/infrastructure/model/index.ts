@@ -13,7 +13,7 @@ export class PlanningEntity implements IPlanningEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: Date })
+  @Column()
   day: Date;
 
   @OneToMany(() => TaskEntity, (task) => task.planning)
