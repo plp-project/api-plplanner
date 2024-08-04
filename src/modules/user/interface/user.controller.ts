@@ -25,8 +25,8 @@ export class UserController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
-  async findById(@Param('id') id: number) {
-    return await this.userService.findById(id);
+  async findOneById(@Param('id') id: number) {
+    return await this.userService.findOneById(id);
   }
 
   @Auth()
