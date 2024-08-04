@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   async authenticated(userId: number) {
-    const user = await this.userService.findById(userId);
+    const user = await this.userService.findOneById(userId);
     return user;
   }
 }

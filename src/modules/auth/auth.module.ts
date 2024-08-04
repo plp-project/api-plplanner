@@ -8,8 +8,8 @@ import { HelpersModule } from '../helpers/helpers.module';
 @Module({
   imports: [
     JwtModule.registerAsync({
+      global: true,
       useFactory: () => ({
-        global: true,
         secret: process.env.JWT_SECRET,
         signOptions: {
           expiresIn: '7d'
