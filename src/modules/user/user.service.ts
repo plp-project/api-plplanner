@@ -51,26 +51,17 @@ export class UserService {
 
   async updateById(id: number, data: UpdateUserDTO) {
     const { email, password, oldPassword } = data;
-    const userExists = await this.userRepository.findOne({ id });
-
-    if (!userExists) {
-      throw new NotFoundException('User not found.');
-    }
+    const user = await this.findById(id);
 
     if (email) {
-      const userExistsWithEmail = await this.userRepository.findOne({
-        email
-      });
-      if (userExistsWithEmail && userExistsWithEmail.id !== id) {
+      const emailInUse = await this.userRepository.exists({ email });
+      if (emailInUse && email !== user.email) {
         throw new ConflictException('User already exists with this email.');
       }
     }
 
     if (oldPassword && password) {
-      const passwordMatch = this.bcrypt.compare(
-        oldPassword,
-        userExists.password
-      );
+      const passwordMatch = this.bcrypt.compare(oldPassword, user.password);
       if (!passwordMatch) {
         throw new ConflictException('Old password does not match.');
       }

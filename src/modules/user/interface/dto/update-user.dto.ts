@@ -7,24 +7,24 @@ import {
   Length,
   ValidateIf
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IUserEntity } from '../../infrastructure/model/interface';
 
 export class UpdateUserDTO implements Partial<IUserEntity> {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsNotEmpty()
   @IsString()
   @Length(3, 60)
   name?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsNotEmpty()
   @IsEmail()
   email?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @ValidateIf((data) => data.oldPassword)
   @IsNotEmpty()
   @IsStrongPassword({
@@ -36,8 +36,8 @@ export class UpdateUserDTO implements Partial<IUserEntity> {
   })
   password?: string;
 
-  @ApiProperty()
-  @ValidateIf((data) => data.newPassword)
+  @ApiPropertyOptional()
+  @ValidateIf((data) => data.password)
   @IsNotEmpty()
   @IsStrongPassword({
     minLength: 8,

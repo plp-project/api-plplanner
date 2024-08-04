@@ -4,6 +4,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { Auth } from 'src/modules/auth/decorators/auth.decorator';
+import { UserId } from 'src/modules/auth/decorators/user-id.decorator';
 
 @Controller('user')
 @ApiTags('User')
@@ -12,26 +13,26 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: 'Create user' })
-  create(@Body() user: CreateUserDTO) {
-    return this.userService.create(user);
+  async create(@Body() user: CreateUserDTO) {
+    return await this.userService.create(user);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all users' })
-  findAll() {
-    return this.userService.findAll();
+  async findAll() {
+    return await this.userService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
-  findById(@Param('id') id: number) {
-    return this.userService.findById(id);
+  async findById(@Param('id') id: number) {
+    return await this.userService.findById(id);
   }
 
   @Auth()
   @Patch(':id')
-  @ApiOperation({ summary: 'Edit user by ID' })
-  editById(@Param('id') id: number, @Body() editInfo: UpdateUserDTO) {
-    return this.userService.updateById(id, editInfo);
+  @ApiOperation({ summary: 'Update user by ID' })
+  async updateById(@UserId() id: number, @Body() updateInfo: UpdateUserDTO) {
+    return await this.userService.updateById(id, updateInfo);
   }
 }
