@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { JwtHelperModule } from './jwt/jwt-helper.module';
+import { BcryptHelper } from './bcrypt/bcrypt-helper.module';
 
 @Module({
-  imports: [JwtHelperModule]
+  providers: [BcryptHelper],
+  exports: [BcryptHelper]
 })
 export class HelpersModule {}
