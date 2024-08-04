@@ -20,6 +20,7 @@ import { HelpersModule } from '../helpers/helpers.module';
     UserModule
   ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
+  exports: [AuthService, JwtModule]
 })
 export class AuthModule {}

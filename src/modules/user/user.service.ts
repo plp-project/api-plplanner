@@ -47,4 +47,18 @@ export class UserService {
     }
     return user;
   }
+
+  async editById(id: number, editInfo: Partial<CreateUserDTO>) {
+    const {email} = editInfo;
+    if (email) {
+      const usingEmail = await this.userRepository.findOne({ email })
+      if (usingEmail.id != id)
+        throw new ConflictException('Email already in use')
+    }
+    const user = await this.userRepository.updateById(id, editInfo);
+    if (!user){
+      throw new NotFoundException('User not found.')
+    }
+    return user;
+  }
 }
