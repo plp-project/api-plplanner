@@ -1,10 +1,18 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { UserRepository } from './infrastructure/user.repository';
 import { CreateUserDTO } from './interface/dto/create-user.dto';
+import { BcryptHelper } from '../helpers/bcrypt/bcrypt-helper.module';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly bcrypt: BcryptHelper
+  ) {}
 
   async create(user: CreateUserDTO) {
     const userExists = await this.userRepository.exists({
@@ -15,7 +23,9 @@ export class UserService {
       throw new ConflictException('User already exists.');
     }
 
-    return this.userRepository.create(user);
+    const password = await this.bcrypt.encrypt(user.password);
+
+    return this.userRepository.create({ ...user, password });
   }
 
   async findAll() {
@@ -23,6 +33,18 @@ export class UserService {
   }
 
   async findById(id: number) {
-    return this.userRepository.findOne({ id });
+    const user = await this.userRepository.findOne({ id });
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+    return user;
+  }
+
+  async findByEmail(email: string) {
+    const user = await this.userRepository.findOne({ email });
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+    return user;
   }
 }
