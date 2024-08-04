@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { UserService } from '../user.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDTO } from './dto/create-user.dto';
-import { EditUserDTO } from './dto/edit-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
 import { Auth } from 'src/modules/auth/decorators/auth.decorator';
 
 @Controller('user')
@@ -29,9 +29,9 @@ export class UserController {
   }
 
   @Auth()
-  @Patch('edit/:id')
-  @ApiOperation({summary: 'Edit user by ID'})
-  editById(@Param('id') id: number, @Body() editInfo: Partial<EditUserDTO>) {
-    return this.userService.editById(id, editInfo);
+  @Patch(':id')
+  @ApiOperation({ summary: 'Edit user by ID' })
+  editById(@Param('id') id: number, @Body() editInfo: UpdateUserDTO) {
+    return this.userService.updateById(id, editInfo);
   }
 }

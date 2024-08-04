@@ -6,6 +6,7 @@ import {
 import { UserRepository } from './infrastructure/user.repository';
 import { CreateUserDTO } from './interface/dto/create-user.dto';
 import { BcryptHelper } from '../helpers/bcrypt/bcrypt-helper.module';
+import { UpdateUserDTO } from './interface/dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,7 @@ export class UserService {
       throw new ConflictException('User already exists.');
     }
 
-    const password = await this.bcrypt.encrypt(user.password);
+    const password = this.bcrypt.encrypt(user.password);
 
     return this.userRepository.create({ ...user, password });
   }
@@ -48,17 +49,36 @@ export class UserService {
     return user;
   }
 
-  async editById(id: number, editInfo: Partial<CreateUserDTO>) {
-    const {email} = editInfo;
+  async updateById(id: number, data: UpdateUserDTO) {
+    const { email, password, oldPassword } = data;
+    const userExists = await this.userRepository.findOne({ id });
+
+    if (!userExists) {
+      throw new NotFoundException('User not found.');
+    }
+
     if (email) {
-      const usingEmail = await this.userRepository.findOne({ email })
-      if (usingEmail.id != id)
-        throw new ConflictException('Email already in use')
+      const userExistsWithEmail = await this.userRepository.findOne({
+        email
+      });
+      if (userExistsWithEmail && userExistsWithEmail.id !== id) {
+        throw new ConflictException('User already exists with this email.');
+      }
     }
-    const user = await this.userRepository.updateById(id, editInfo);
-    if (!user){
-      throw new NotFoundException('User not found.')
+
+    if (oldPassword && password) {
+      const passwordMatch = this.bcrypt.compare(
+        oldPassword,
+        userExists.password
+      );
+      if (!passwordMatch) {
+        throw new ConflictException('Old password does not match.');
+      }
+      data.password = this.bcrypt.encrypt(password);
     }
-    return user;
+
+    delete data.oldPassword;
+
+    return await this.userRepository.updateById(id, data);
   }
 }
