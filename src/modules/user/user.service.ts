@@ -53,9 +53,9 @@ export class UserService {
     const { email, password, oldPassword } = data;
     const user = await this.findById(id);
 
-    if (email) {
+    if (email && email !== user.email) {
       const emailInUse = await this.userRepository.exists({ email });
-      if (emailInUse && email !== user.email) {
+      if (emailInUse) {
         throw new ConflictException('User already exists with this email.');
       }
     }
