@@ -33,7 +33,7 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  async findById(id: number) {
+  async findOneById(id: number) {
     const user = await this.userRepository.findOne({ id });
     if (!user) {
       throw new NotFoundException('User not found.');
@@ -51,7 +51,7 @@ export class UserService {
 
   async updateById(id: number, data: UpdateUserDTO) {
     const { email, password, oldPassword } = data;
-    const user = await this.findById(id);
+    const user = await this.findOneById(id);
 
     if (email) {
       const emailInUse = await this.userRepository.exists({ email });
