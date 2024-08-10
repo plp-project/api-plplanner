@@ -30,7 +30,7 @@ export class UserController {
   }
 
   @Auth()
-  @Patch(':id')
+  @Patch('')
   @ApiOperation({ summary: 'Update user by ID' })
   async updateById(@UserId() id: number, @Body() updateInfo: UpdateUserDTO) {
     return await this.userService.updateById(id, updateInfo);
