@@ -16,7 +16,7 @@ export class GoalEntity implements IGoalEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 255 })
+  @Column()
   name: string;
 
   @Column({ type: 'enum', enum: categories })
@@ -31,12 +31,12 @@ export class GoalEntity implements IGoalEntity {
   @Column()
   categoryId: number;
 
+  @OneToOne(() => CategoryEntity, { createForeignKeyConstraints: false })
+  @JoinColumn()
+  category: CategoryEntity;
+
   @Column()
   userId: number;
-
-  @OneToOne(() => CategoryEntity, {createForeignKeyConstraints: false})
-  @JoinColumn({name: 'categoryId'})
-  category: CategoryEntity;
 
   @ManyToOne(() => UserEntity, (user) => user.goals)
   user: UserEntity;

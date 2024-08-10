@@ -13,13 +13,13 @@ export class UserEntity implements IUserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 255 })
+  @Column()
   name: string;
 
-  @Column({ length: 255, unique: true })
+  @Column({ unique: true })
   email: string;
 
-  @Column({ length: 255 })
+  @Column()
   password: string;
 
   @CreateDateColumn({ type: 'timestamp' })

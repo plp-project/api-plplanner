@@ -11,10 +11,10 @@ export class CategoryEntity implements ICategoryEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 255 })
+  @Column()
   name: string;
 
-  @Column({ length: 255 })
+  @Column()
   color: string;
 
   @Column({ type: 'enum', enum: categories })
