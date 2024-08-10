@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
 import { categories, goalStatus, IGoalEntity } from './interface';
 import { CategoryEntity } from 'src/modules/category/infrastructure/model';
+import { UserEntity } from 'src/modules/user/infrastructure/model';
 
 @Entity({ name: 'goal' })
 export class GoalEntity implements IGoalEntity {
@@ -29,7 +31,13 @@ export class GoalEntity implements IGoalEntity {
   @Column()
   categoryId: number;
 
-  @OneToOne(() => CategoryEntity)
-  @JoinColumn()
+  @Column()
+  userId: number;
+
+  @OneToOne(() => CategoryEntity, {createForeignKeyConstraints: false})
+  @JoinColumn({name: 'categoryId'})
   category: CategoryEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.goals)
+  user: UserEntity;
 }
