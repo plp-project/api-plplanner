@@ -14,6 +14,9 @@ export class CategoryEntity implements ICategoryEntity {
   @Column({ length: 255 })
   name: string;
 
+  @Column({ length: 255 })
+  color: string;
+
   @Column({ type: 'enum', enum: categories })
   type: categories;
 

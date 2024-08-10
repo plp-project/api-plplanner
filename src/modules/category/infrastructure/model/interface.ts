@@ -5,5 +5,6 @@ export enum categories {
 
 export interface ICategoryEntity {
   name: string;
+  color: string;
   type: categories;
 }
