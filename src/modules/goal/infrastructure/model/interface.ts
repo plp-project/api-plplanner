@@ -13,5 +13,6 @@ export interface IGoalEntity {
   name: string;
   type: categories;
   categoryId: number;
-  status: goalStatus;
+  userId: number;
+  status: goalStatus | null;
 }

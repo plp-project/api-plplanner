@@ -16,13 +16,10 @@ export class TaskEntity implements ITaskEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 255 })
+  @Column()
   description: string;
 
-  @Column({
-    type: 'enum',
-    enum: taskStatus
-  })
+  @Column({ type: 'enum', enum: taskStatus })
   status: taskStatus;
 
   @Column({ type: 'enum', enum: durations })
