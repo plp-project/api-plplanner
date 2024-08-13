@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GoalEntity } from '../../infrastructure/model';
-import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length
+} from 'class-validator';
 import { categories, goalStatus } from '../../infrastructure/model/interface';
 
 export class CreateGoalDTO implements Partial<GoalEntity> {
@@ -17,5 +23,6 @@ export class CreateGoalDTO implements Partial<GoalEntity> {
 
   @ApiProperty()
   @IsEnum(goalStatus)
-  readonly status: goalStatus;
+  @IsOptional()
+  readonly status: goalStatus | null = null;
 }

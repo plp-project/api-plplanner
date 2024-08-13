@@ -6,8 +6,7 @@ export enum categories {
 export enum goalStatus {
   SUCCESS = 'success',
   FAILED = 'failed',
-  PARTIALLY_SUCCESS = 'partially_success',
-  TO_DO = 'to_do'
+  PARTIALLY_SUCCESS = 'partially_success'
 }
 
 export interface IGoalEntity {
@@ -15,5 +14,5 @@ export interface IGoalEntity {
   type: categories;
   categoryId: number;
   userId: number;
-  status: goalStatus;
+  status: goalStatus | null;
 }

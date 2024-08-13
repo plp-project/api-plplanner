@@ -22,8 +22,8 @@ export class GoalEntity implements IGoalEntity {
   @Column({ type: 'enum', enum: categories })
   type: categories;
 
-  @Column({ type: 'enum', enum: goalStatus })
-  status: goalStatus;
+  @Column({ type: 'enum', enum: goalStatus, nullable: true })
+  status: goalStatus | null;
 
   @CreateDateColumn()
   createdAt: Date;
