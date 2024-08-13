@@ -6,8 +6,8 @@ import { CreateCategoryDTO } from './interface/dto/create-category-dto';
 export class CategoryService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  async create(category: CreateCategoryDTO) {
-    return await this.categoryRepository.create(category);
+  async create(userId: number, category: CreateCategoryDTO) {
+    return await this.categoryRepository.create({ ...category, userId });
   }
 
   async findOneById(id: number) {

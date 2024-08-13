@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { IUserEntity } from './interface';
 import { GoalEntity } from 'src/modules/goal/infrastructure/model';
+import { CategoryEntity } from 'src/modules/category/infrastructure/model';
 
 @Entity({ name: 'user' })
 export class UserEntity implements IUserEntity {
@@ -27,4 +28,7 @@ export class UserEntity implements IUserEntity {
 
   @OneToMany(() => GoalEntity, (goal) => goal.user)
   goals: GoalEntity[];
+
+  @OneToMany(() => CategoryEntity, (category) => category.user)
+  categories: CategoryEntity[];
 }
