@@ -19,4 +19,12 @@ export class CategoryService {
   async findAll() {
     return await this.categoryRepository.find();
   }
+
+  async update(id: number, data: Partial<CreateCategoryDTO>) {
+    return await this.categoryRepository.updateById(id, data);
+  }
+
+  async deleteById(id: number) {
+    return await this.categoryRepository.deleteById(id);
+  }
 }
