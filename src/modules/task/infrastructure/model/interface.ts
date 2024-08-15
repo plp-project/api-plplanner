@@ -1,12 +1,12 @@
 import { CategoryEntity } from 'src/modules/category/infrastructure/model';
 
-export enum taskStatus {
+export enum TaskStatus {
   EXECUTED = 'executed', //! Executada
   PARTIALLY_EXECUTED = 'partially_executed', //! Parcialmente executada
   POSTPONED = 'postponed' //! Adiada
 }
 
-export enum durations {
+export enum TaskDuration {
   HALF_HOUR = '30m',
   ONE_HOUR = '1h',
   MORNING = 'morning',
@@ -16,8 +16,8 @@ export enum durations {
 
 export interface ITaskEntity {
   description: string;
-  status: taskStatus;
-  duration: durations;
+  status: TaskStatus;
+  duration: TaskDuration;
   categoryId: number;
   planningId: number;
   category?: CategoryEntity;

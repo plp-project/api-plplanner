@@ -3,10 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { UserEntity } from 'src/modules/user/infrastructure/model';
-import { categories, ICategoryEntity } from './interface';
+import { ICategoryEntity } from './interface';
 
 @Entity({ name: 'category' })
 export class CategoryEntity implements ICategoryEntity {
@@ -19,9 +20,6 @@ export class CategoryEntity implements ICategoryEntity {
   @Column()
   color: string;
 
-  @Column({ type: 'enum', enum: categories })
-  type: categories;
-
   @Column()
   userId: number;
 
@@ -30,4 +28,7 @@ export class CategoryEntity implements ICategoryEntity {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

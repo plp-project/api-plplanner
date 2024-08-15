@@ -5,9 +5,10 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
 } from 'typeorm';
-import { categories, goalStatus, IGoalEntity } from './interface';
+import { GoalStatus, IGoalEntity } from './interface';
 import { CategoryEntity } from 'src/modules/category/infrastructure/model';
 import { UserEntity } from 'src/modules/user/infrastructure/model';
 
@@ -19,14 +20,8 @@ export class GoalEntity implements IGoalEntity {
   @Column()
   name: string;
 
-  @Column({ type: 'enum', enum: categories })
-  type: categories;
-
-  @Column({ type: 'enum', enum: goalStatus, default: goalStatus.TODO })
-  status?: goalStatus;
-
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column({ type: 'enum', enum: GoalStatus, default: GoalStatus.TODO })
+  status?: GoalStatus;
 
   @Column()
   categoryId: number;
@@ -40,4 +35,10 @@ export class GoalEntity implements IGoalEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.goals)
   user: UserEntity;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

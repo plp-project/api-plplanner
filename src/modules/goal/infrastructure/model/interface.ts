@@ -1,9 +1,4 @@
-export enum categories {
-  GOAL = 'goal', //! Meta
-  TASK = 'task'
-}
-
-export enum goalStatus {
+export enum GoalStatus {
   SUCCESS = 'success',
   FAILED = 'failed',
   PARTIALLY_SUCCESS = 'partially_success',
@@ -12,8 +7,7 @@ export enum goalStatus {
 
 export interface IGoalEntity {
   name: string;
-  type: categories;
+  status?: GoalStatus;
   categoryId: number;
   userId: number;
-  status?: goalStatus | null;
 }
