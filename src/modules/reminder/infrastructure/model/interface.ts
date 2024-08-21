@@ -1,10 +1,10 @@
-export enum reminderTypes {
+export enum ReminderTypes {
   CALL = 'call',
   MEETING = 'meeting',
   SHOPPING = 'shopping'
 }
 
 export interface IReminderEntity {
-  type: reminderTypes;
+  type: ReminderTypes;
   creationDate: Date;
 }

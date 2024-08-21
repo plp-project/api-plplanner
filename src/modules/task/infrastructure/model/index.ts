@@ -7,7 +7,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
-import { durations, ITaskEntity, taskStatus } from './interface';
+import { ITaskEntity, TaskDuration, TaskStatus } from './interface';
 import { CategoryEntity } from 'src/modules/category/infrastructure/model';
 import { PlanningEntity } from 'src/modules/planning/infrastructure/model';
 
@@ -19,14 +19,11 @@ export class TaskEntity implements ITaskEntity {
   @Column()
   description: string;
 
-  @Column({ type: 'enum', enum: taskStatus })
-  status: taskStatus;
+  @Column({ type: 'enum', enum: TaskStatus })
+  status: TaskStatus;
 
-  @Column({ type: 'enum', enum: durations })
-  duration: durations;
-
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column({ type: 'enum', enum: TaskDuration })
+  duration: TaskDuration;
 
   @Column()
   categoryId: number;
@@ -40,4 +37,7 @@ export class TaskEntity implements ITaskEntity {
 
   @ManyToOne(() => PlanningEntity, (planning) => planning.tasks)
   planning?: PlanningEntity;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

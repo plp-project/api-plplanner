@@ -18,4 +18,12 @@ export class GoalService {
   async findAll(userId: number) {
     return await this.goalRepository.find({ userId }, { category: true });
   }
+
+  async update(id: number, data: Partial<CreateGoalDTO>) {
+    return await this.goalRepository.updateById(id, data);
+  }
+
+  async deleteById(id: number) {
+    return await this.goalRepository.deleteById(id);
+  }
 }

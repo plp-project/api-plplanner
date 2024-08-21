@@ -21,7 +21,7 @@ export class GoalController {
     return await this.goalService.create(userId, categoryId, goal);
   }
 
-  @Get('')
+  @Get()
   @ApiOperation({ summary: 'Find all goals by userId' })
   @Auth()
   async findAll(@UserId() userId: number) {
