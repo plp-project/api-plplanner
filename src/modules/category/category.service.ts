@@ -1,11 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { CategoryRepository } from './infrastructure/category.repository';
 import { CreateCategoryDTO } from './interface/dto/create-category-dto';
 import { UpdateCategoryDTO } from './interface/dto/update-category-dto';
+import { GoalRepository } from '../goal/infrastructure/goal.repository';
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly categoryRepository: CategoryRepository) {}
+  constructor(
+    private readonly categoryRepository: CategoryRepository,
+    private readonly goalRepository: GoalRepository
+  ) {}
 
   async create(userId: number, category: CreateCategoryDTO) {
     return await this.categoryRepository.create({ ...category, userId });
@@ -38,6 +46,13 @@ export class CategoryService {
 
   async delete(userId: number, categoryId: number) {
     await this.findOneByUserId(userId, categoryId);
+    const anyGoalWithCategory = await this.goalRepository.findOne({
+      categoryId: categoryId
+    });
+
+    if (anyGoalWithCategory)
+      throw new ConflictException("Categories can't be deleted");
+
     return await this.categoryRepository.deleteById(categoryId);
   }
 }
