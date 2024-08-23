@@ -46,12 +46,10 @@ export class CategoryService {
 
   async delete(userId: number, categoryId: number) {
     await this.findOneByUserId(userId, categoryId);
-    const anyGoalWithCategory = await this.goalRepository.findOne({
-      categoryId: categoryId
-    });
+    const goalWithCategory = await this.goalRepository.findOne({ categoryId });
 
-    if (anyGoalWithCategory)
-      throw new ConflictException("Categories can't be deleted");
+    if (goalWithCategory)
+      throw new ConflictException("This category can't be deleted.");
 
     return await this.categoryRepository.deleteById(categoryId);
   }
