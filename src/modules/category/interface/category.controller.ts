@@ -39,7 +39,7 @@ export class CategoryController {
     @UserId() userId: number,
     @Param('id', ParseIntPipe) categoryId: number
   ) {
-    return await this.categoryService.findOneByUserId(userId, categoryId);
+    return await this.categoryService.findOneByUser(userId, categoryId);
   }
 
   @Patch(':id')

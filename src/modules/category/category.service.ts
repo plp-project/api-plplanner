@@ -29,7 +29,7 @@ export class CategoryService {
     return category;
   }
 
-  async findOneByUserId(userId: number, categoryId: number) {
+  async findOneByUser(userId: number, categoryId: number) {
     const category = await this.categoryRepository.findOne({
       id: categoryId,
       userId
@@ -40,12 +40,12 @@ export class CategoryService {
   }
 
   async update(userId: number, categoryId: number, data: UpdateCategoryDTO) {
-    await this.findOneByUserId(userId, categoryId);
+    await this.findOneByUser(userId, categoryId);
     return await this.categoryRepository.updateById(categoryId, data);
   }
 
   async delete(userId: number, categoryId: number) {
-    await this.findOneByUserId(userId, categoryId);
+    await this.findOneByUser(userId, categoryId);
     const goalWithCategory = await this.goalRepository.findOne({ categoryId });
 
     if (goalWithCategory)
