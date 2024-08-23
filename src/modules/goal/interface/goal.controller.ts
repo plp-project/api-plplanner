@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post
+} from '@nestjs/common';
 import { GoalService } from '../goal.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserId } from 'src/modules/auth/decorators/user-id.decorator';
@@ -15,7 +22,7 @@ export class GoalController {
   @Auth()
   async create(
     @UserId() userId: number,
-    @Param('categoryId') categoryId: number,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
     @Body() goal: CreateGoalDTO
   ) {
     return await this.goalService.create(userId, categoryId, goal);

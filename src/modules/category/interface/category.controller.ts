@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post
 } from '@nestjs/common';
@@ -36,7 +37,7 @@ export class CategoryController {
   @ApiOperation({ summary: 'Find a category by id' })
   async findOneByUserId(
     @UserId() userId: number,
-    @Param('id') categoryId: number
+    @Param('id', ParseIntPipe) categoryId: number
   ) {
     return await this.categoryService.findOneByUserId(userId, categoryId);
   }
@@ -45,7 +46,7 @@ export class CategoryController {
   @ApiOperation({ summary: 'Update a category' })
   async update(
     @UserId() userId: number,
-    @Param('id') categoryId: number,
+    @Param('id', ParseIntPipe) categoryId: number,
     @Body() category: UpdateCategoryDTO
   ) {
     return await this.categoryService.update(userId, categoryId, category);
@@ -53,7 +54,10 @@ export class CategoryController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a category' })
-  async delete(@UserId() userId: number, @Param('id') categoryId: number) {
+  async delete(
+    @UserId() userId: number,
+    @Param('id', ParseIntPipe) categoryId: number
+  ) {
     return await this.categoryService.delete(userId, categoryId);
   }
 }
