@@ -4,7 +4,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
 import { ITaskEntity, TaskDuration, TaskStatus } from './interface';
@@ -16,10 +15,10 @@ export class TaskEntity implements ITaskEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 255 })
   description: string;
 
-  @Column({ type: 'enum', enum: TaskStatus })
+  @Column({ type: 'enum', enum: TaskStatus, default: TaskStatus.TODO })
   status: TaskStatus;
 
   @Column({ type: 'enum', enum: TaskDuration })
@@ -28,7 +27,7 @@ export class TaskEntity implements ITaskEntity {
   @Column()
   categoryId: number;
 
-  @OneToOne(() => CategoryEntity)
+  @ManyToOne(() => CategoryEntity)
   @JoinColumn()
   category?: CategoryEntity;
 
