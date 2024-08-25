@@ -5,7 +5,8 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { IPlanningEntity } from './interface';
 import { UserEntity } from 'src/modules/user/infrastructure/model';
@@ -21,7 +22,7 @@ export class PlanningEntity implements IPlanningEntity {
   @Column()
   userId: number;
 
-  @OneToMany(() => TaskEntity, (task) => task.planning)
+  @OneToMany(() => TaskEntity, (task) => task.planning, { cascade: true })
   tasks: TaskEntity[];
 
   @ManyToOne(() => UserEntity, (user) => user.plannings)
@@ -29,4 +30,7 @@ export class PlanningEntity implements IPlanningEntity {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

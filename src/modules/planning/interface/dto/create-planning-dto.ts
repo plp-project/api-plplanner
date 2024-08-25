@@ -1,9 +1,17 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { PlanningEntity } from '../../infrastructure/model';
-import { TaskEntity } from 'src/modules/task/infrastructure/model';
-import { IsDateString, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  ValidateNested
+} from 'class-validator';
+import { IPlanningEntity } from '../../infrastructure/model/interface';
+import { CreateTaskDTO } from 'src/modules/task/interface/dto/create-task-dto';
+import { Type } from 'class-transformer';
 
-export class CreatePlanningDTO implements Partial<PlanningEntity> {
+type CreatePlanningDTOType = Omit<IPlanningEntity, 'tasks'>;
+
+export class CreatePlanningDTO implements Partial<CreatePlanningDTOType> {
   @ApiProperty()
   @IsDateString()
   @IsNotEmpty()
@@ -11,5 +19,7 @@ export class CreatePlanningDTO implements Partial<PlanningEntity> {
 
   @ApiPropertyOptional({ default: [] })
   @IsOptional()
-  readonly tasks: TaskEntity[];
+  @Type(() => CreateTaskDTO)
+  @ValidateNested({ each: true })
+  readonly tasks: CreateTaskDTO[] = [];
 }

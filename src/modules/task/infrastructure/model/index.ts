@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
@@ -27,14 +26,15 @@ export class TaskEntity implements ITaskEntity {
   @Column()
   categoryId: number;
 
-  @ManyToOne(() => CategoryEntity)
-  @JoinColumn()
+  @ManyToOne(() => CategoryEntity, { eager: true })
   category?: CategoryEntity;
 
   @Column()
   planningId: number;
 
-  @ManyToOne(() => PlanningEntity, (planning) => planning.tasks)
+  @ManyToOne(() => PlanningEntity, (planning) => planning.tasks, {
+    onDelete: 'CASCADE'
+  })
   planning?: PlanningEntity;
 
   @CreateDateColumn()

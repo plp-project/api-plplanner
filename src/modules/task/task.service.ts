@@ -13,25 +13,31 @@ export class TaskService {
     private readonly planningService: PlanningService
   ) {}
 
-  async create(
-    userId: number,
-    categoryId: number,
-    planningId: number,
-    task: CreateTaskDTO
-  ) {
+  async create(userId: number, planningId: number, task: CreateTaskDTO) {
+    const { categoryId } = task;
+    await this.planningService.findOneByUser(userId, planningId);
     await this.categoryService.findOneByUser(userId, categoryId);
-    await this.planningService.findUserPlanning(userId, planningId);
-    return this.taskRepository.create({
-      ...task,
-      categoryId,
-      planningId
+    return this.taskRepository.create({ ...task, planningId });
+  }
+
+  async findOneByUser(userId: number, taskId: number) {
+    const task = await this.taskRepository.findOne({
+      id: taskId,
+      planning: { userId }
     });
+
+    if (!task) throw new NotFoundException('Task not found.');
+    return task;
   }
 
   async update(userId: number, taskId: number, data: UpdateTaskDTO) {
-    const task = await this.taskRepository.findOne({ id: taskId });
-    if (!task) throw new NotFoundException('Task not found.');
+    await this.findOneByUser(userId, taskId);
     await this.categoryService.findOneByUser(userId, data.categoryId);
     return this.taskRepository.updateById(taskId, data);
+  }
+
+  async delete(userId: number, taskId: number) {
+    await this.findOneByUser(userId, taskId);
+    return this.taskRepository.deleteById(taskId);
   }
 }
