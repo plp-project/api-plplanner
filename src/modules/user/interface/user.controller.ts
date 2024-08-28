@@ -43,4 +43,11 @@ export class UserController {
   async updateById(@UserId() id: number, @Body() updateInfo: UpdateUserDTO) {
     return await this.userService.updateById(id, updateInfo);
   }
+
+  @Auth()
+  @Get()
+  @ApiOperation({ summary: 'Get user by Email'})
+  async findOneByEmail(email: string) {
+    return await this.userService.findByEmail(email);
+  }
 }
