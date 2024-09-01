@@ -11,9 +11,9 @@ import {
 import { GoalService } from '../goal.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserId } from 'src/modules/auth/decorators/user-id.decorator';
-import { CreateGoalDTO } from './dto/create-goal-dto';
+import { CreateGoalDTO } from './dto/create-goal.dto';
 import { Auth } from 'src/modules/auth/decorators/auth.decorator';
-import { UpdateGoalDTO } from './dto/update-category.dto';
+import { UpdateGoalDTO } from './dto/update-goal.dto';
 
 @Controller('goal')
 @ApiTags('Goal')

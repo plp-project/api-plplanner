@@ -3,12 +3,14 @@ import { CategoryRepositoryModule } from '../category/infrastructure/category.re
 import { GoalRepositoryModule } from '../goal/infrastructure/goal.repository';
 import { TaskRepositoryModule } from '../task/infrastructure/task.repository';
 import { ReportService } from './report.service';
+import { HelpersModule } from '../helpers/helpers.module';
 
 @Module({
   imports: [
     CategoryRepositoryModule,
     GoalRepositoryModule,
-    TaskRepositoryModule
+    TaskRepositoryModule,
+    HelpersModule
   ],
   controllers: [],
   providers: [ReportService],

@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeORMConfig } from 'src/config/database';
 import { GoalModule } from './goal/goal.module';
 import { CategoryModule } from './category/category.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CategoryModule } from './category/category.module';
     GoalModule,
     CategoryModule,
     HelpersModule,
+    ReportModule,
     TypeOrmModule.forRootAsync(TypeORMConfig)
   ]
 })
