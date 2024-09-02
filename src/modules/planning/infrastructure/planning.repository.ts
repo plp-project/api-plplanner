@@ -5,7 +5,7 @@ import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { IPlanningEntity } from './model/interface';
 
 @Injectable()
-export class TaskRepository {
+export class PlanningRepository {
   constructor(
     @InjectRepository(PlanningEntity)
     private repository: Repository<PlanningEntity>
@@ -56,7 +56,7 @@ export class TaskRepository {
 
 @Module({
   imports: [TypeOrmModule.forFeature([PlanningEntity])],
-  providers: [TaskRepository],
-  exports: [TaskRepository]
+  providers: [PlanningRepository],
+  exports: [PlanningRepository]
 })
 export class PlanningRepositoryModule {}

@@ -3,7 +3,8 @@ import { CategoryEntity } from 'src/modules/category/infrastructure/model';
 export enum TaskStatus {
   EXECUTED = 'executed', //! Executada
   PARTIALLY_EXECUTED = 'partially_executed', //! Parcialmente executada
-  POSTPONED = 'postponed' //! Adiada
+  POSTPONED = 'postponed', //! Adiada
+  TODO = 'todo'
 }
 
 export enum TaskDuration {
