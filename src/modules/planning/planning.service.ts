@@ -11,7 +11,17 @@ export class PlanningService {
 
   async create(userId: number, planning: CreatePlanningDTO) {
     const tasks = planning.tasks.map((task) => plainToClass(TaskEntity, task));
-    return await this.planningRepository.create({ ...planning, tasks, userId });
+    try {
+      return await this.planningRepository.create({
+        ...planning,
+        tasks,
+        userId
+      });
+    } catch (error) {
+      if (error.message.includes('FOREIGN KEY (`categoryId`)'))
+        throw new NotFoundException('One or more categories not found.');
+      throw error;
+    }
   }
 
   async findAllByUser(userId: number) {
