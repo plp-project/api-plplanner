@@ -4,6 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { BcryptHelper } from '../helpers/bcrypt/bcrypt-helper.module';
 import { JwtPayloadDTO } from './interface/dto/jwt-payload';
+import { UserLoginDTO } from './interface/dto/user-login.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +15,7 @@ export class AuthService {
     private readonly userService: UserService
   ) {}
 
-  async login(login: LoginDTO): Promise<{ token: string }> {
+  async login(login: LoginDTO): Promise<{ user: UserLoginDTO; token: string }> {
     const { email, password } = login;
 
     const user = await this.userService.findByEmail(email).catch(() => null);
@@ -25,8 +27,8 @@ export class AuthService {
 
     const payload = new JwtPayloadDTO(user);
     const token = await this.jwtService.signAsync({ ...payload });
-
-    return { token };
+    const userMask = plainToClass(UserLoginDTO, user);
+    return { user: userMask, token };
   }
 
   async authenticated(userId: number) {
