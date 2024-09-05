@@ -6,6 +6,7 @@ import { MathHelper } from '../helpers/math/math-helper.module';
 import { reportPeriods } from './interface/dto/create-report.dto';
 import { goalStatus } from '../goal/infrastructure/model/interface';
 import { LessThanOrEqual, MoreThanOrEqual, And } from 'typeorm';
+import { taskStatuses } from '../task/infrastructure/model/interface';
 
 @Injectable()
 export class ReportService {
@@ -36,11 +37,40 @@ export class ReportService {
       goals.length
     );
 
+    const tasks = await this.taskRepository.find(
+      {
+        planning: {
+          userId: userId,
+          createdAt: And(
+            MoreThanOrEqual(initialDate),
+            LessThanOrEqual(finalDate)
+          )
+        }
+      },
+      {
+        planning: true
+      }
+    );
+
+    const tasksFinished = tasks.filter(
+      (task) => task.status === taskStatuses.EXECUTED
+    );
+
+    const tasksPercentage = this.mathHelper.calculatePercentage(
+      tasksFinished.length,
+      tasks.length
+    );
+
     return {
       goals: {
         total: goals.length,
         finished: goalsFineshed.length,
         percentage: goalsPercentage
+      },
+      tasks: {
+        total: tasks.length,
+        finished: tasksFinished.length,
+        percentage: tasksPercentage
       }
     };
   }
