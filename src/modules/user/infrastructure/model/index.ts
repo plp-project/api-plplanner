@@ -8,6 +8,7 @@ import {
 import { IUserEntity } from './interface';
 import { GoalEntity } from 'src/modules/goal/infrastructure/model';
 import { CategoryEntity } from 'src/modules/category/infrastructure/model';
+import { PlanningEntity } from 'src/modules/planning/infrastructure/model';
 
 @Entity({ name: 'user' })
 export class UserEntity implements IUserEntity {
@@ -31,4 +32,7 @@ export class UserEntity implements IUserEntity {
 
   @OneToMany(() => CategoryEntity, (category) => category.user)
   categories: CategoryEntity[];
+
+  @OneToMany(() => PlanningEntity, (planning) => planning.user)
+  plannings: PlanningEntity[];
 }

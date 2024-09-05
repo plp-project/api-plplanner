@@ -7,12 +7,16 @@ import { TypeORMConfig } from 'src/config/database';
 import { GoalModule } from './goal/goal.module';
 import { CategoryModule } from './category/category.module';
 import { ReportModule } from './report/report.module';
+import { PlanningModule } from './planning/planning.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
     GoalModule,
+    PlanningModule,
+    TaskModule,
     CategoryModule,
     HelpersModule,
     ReportModule,

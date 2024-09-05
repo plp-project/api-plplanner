@@ -3,10 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { IPlanningEntity } from './interface';
+import { UserEntity } from 'src/modules/user/infrastructure/model';
 
 @Entity({ name: 'planning' })
 export class PlanningEntity implements IPlanningEntity {
@@ -16,9 +19,18 @@ export class PlanningEntity implements IPlanningEntity {
   @Column()
   day: Date;
 
-  @OneToMany(() => TaskEntity, (task) => task.planning)
+  @Column()
+  userId: number;
+
+  @OneToMany(() => TaskEntity, (task) => task.planning, { cascade: true })
   tasks: TaskEntity[];
+
+  @ManyToOne(() => UserEntity, (user) => user.plannings)
+  user: UserEntity;
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

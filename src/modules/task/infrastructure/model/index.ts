@@ -2,12 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
-import { ITaskEntity, taskDuration, taskStatus } from './interface';
+import { ITaskEntity, taskDurations, taskStatuses } from './interface';
 import { CategoryEntity } from 'src/modules/category/infrastructure/model';
 import { PlanningEntity } from 'src/modules/planning/infrastructure/model';
 
@@ -16,26 +14,27 @@ export class TaskEntity implements ITaskEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 255 })
   description: string;
 
-  @Column({ type: 'enum', enum: taskStatus })
-  status: taskStatus;
+  @Column({ type: 'enum', enum: taskStatuses })
+  status: taskStatuses;
 
-  @Column({ type: 'enum', enum: taskDuration })
-  duration: taskDuration;
+  @Column({ type: 'enum', enum: taskDurations })
+  duration: taskDurations;
 
   @Column()
   categoryId: number;
 
-  @OneToOne(() => CategoryEntity)
-  @JoinColumn()
+  @ManyToOne(() => CategoryEntity, { eager: true })
   category?: CategoryEntity;
 
   @Column()
   planningId: number;
 
-  @ManyToOne(() => PlanningEntity, (planning) => planning.tasks)
+  @ManyToOne(() => PlanningEntity, (planning) => planning.tasks, {
+    onDelete: 'CASCADE'
+  })
   planning?: PlanningEntity;
 
   @CreateDateColumn()
