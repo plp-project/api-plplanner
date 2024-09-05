@@ -14,6 +14,6 @@ export class ReportController {
   @Post('')
   @ApiOperation({ summary: 'Create a report' })
   async create(@UserId() userId: number, data: CreateReportDTO) {
-    return await this.reportService.create(userId, data.date, data.period);
+    return await this.reportService.create(userId, data);
   }
 }

@@ -3,7 +3,7 @@ import { GoalRepository } from '../goal/infrastructure/goal.repository';
 import { TaskRepository } from '../task/infrastructure/task.repository';
 import { CategoryRepository } from '../category/infrastructure/category.repository';
 import { MathHelper } from '../helpers/math/math-helper.module';
-import { reportPeriods } from './interface/dto/create-report.dto';
+import { CreateReportDTO } from './interface/dto/create-report.dto';
 import { goalStatus } from '../goal/infrastructure/model/interface';
 import { LessThanOrEqual, MoreThanOrEqual, And } from 'typeorm';
 import { taskStatuses } from '../task/infrastructure/model/interface';
@@ -17,10 +17,10 @@ export class ReportService {
     private readonly mathHelper: MathHelper
   ) {}
 
-  async create(userId: number, date: Date, period: reportPeriods) {
+  async create(userId: number, date: CreateReportDTO) {
     const { initialDate, finalDate } = this.mathHelper.calculatePeriod(
-      date,
-      period
+      date.date,
+      date.period
     );
 
     const goals = await this.goalRepository.find({
@@ -60,6 +60,13 @@ export class ReportService {
       tasksFinished.length,
       tasks.length
     );
+
+    /* ! TODO
+      Destacar as semanas e meses mais produtivos;
+      Destacar os turnos mais produtivos;
+      Quais as categorias de tarefa mais realizadas;
+      Quais as categorias de metas mais realizadas;
+    */
 
     return {
       goals: {
