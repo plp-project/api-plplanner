@@ -1,14 +1,37 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { IReminderEntity, ReminderTypes } from './interface';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+import { IReminderEntity, ReminderType } from './interface';
+import { UserEntity } from 'src/modules/user/infrastructure/model';
 
 @Entity({ name: 'reminder' })
 export class ReminderEntity implements IReminderEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'enum', enum: ReminderTypes })
-  type: ReminderTypes;
+  @Column()
+  description: string;
 
-  @Column({ type: Date })
-  creationDate: Date;
+  @Column({ type: 'enum', enum: ReminderType })
+  type: ReminderType;
+
+  @Column()
+  date: Date;
+
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => UserEntity)
+  user: UserEntity;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

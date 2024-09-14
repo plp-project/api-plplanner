@@ -8,6 +8,7 @@ import { GoalModule } from './goal/goal.module';
 import { CategoryModule } from './category/category.module';
 import { PlanningModule } from './planning/planning.module';
 import { TaskModule } from './task/task.module';
+import { ReminderModule } from './reminder/reminder.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TaskModule } from './task/task.module';
     PlanningModule,
     TaskModule,
     CategoryModule,
+    ReminderModule,
     HelpersModule,
     TypeOrmModule.forRootAsync(TypeORMConfig)
   ]

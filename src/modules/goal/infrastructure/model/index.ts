@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
-import { GoalStatus, IGoalEntity } from './interface';
+import { GoalDuration, GoalStatus, IGoalEntity } from './interface';
 import { CategoryEntity } from 'src/modules/category/infrastructure/model';
 import { UserEntity } from 'src/modules/user/infrastructure/model';
 
@@ -18,7 +18,13 @@ export class GoalEntity implements IGoalEntity {
   id: number;
 
   @Column()
-  name: string;
+  description: string;
+
+  @Column({ type: 'enum', enum: GoalDuration })
+  duration: GoalDuration;
+
+  @Column()
+  date: Date;
 
   @Column({ type: 'enum', enum: GoalStatus, default: GoalStatus.TODO })
   status?: GoalStatus;

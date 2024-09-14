@@ -6,8 +6,16 @@ export enum GoalStatus {
 }
 
 export interface IGoalEntity {
-  name: string;
+  description: string;
+  duration: GoalDuration;
+  date: Date;
   status?: GoalStatus;
   categoryId: number;
   userId: number;
+}
+
+export enum GoalDuration {
+  WEEKLY = 'weekly',
+  MONTHLY = 'monthly',
+  YEARLY = 'yearly'
 }
