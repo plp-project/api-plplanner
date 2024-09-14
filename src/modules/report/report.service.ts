@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GoalRepository } from '../goal/infrastructure/goal.repository';
 import { TaskRepository } from '../task/infrastructure/task.repository';
-import { CategoryRepository } from '../category/infrastructure/category.repository';
 import { MathHelper } from '../helpers/math/math-helper.module';
 import { CreateReportDTO } from './interface/dto/create-report.dto';
 import { goalStatus } from '../goal/infrastructure/model/interface';
@@ -13,7 +12,6 @@ export class ReportService {
   constructor(
     private readonly goalRepository: GoalRepository,
     private readonly taskRepository: TaskRepository,
-    private readonly categoryRepository: CategoryRepository,
     private readonly mathHelper: MathHelper
   ) {}
 
@@ -48,7 +46,8 @@ export class ReportService {
         }
       },
       {
-        planning: true
+        planning: true,
+        category: true
       }
     );
 
@@ -64,20 +63,30 @@ export class ReportService {
     /* ! TODO
       Destacar as semanas e meses mais produtivos;
       Destacar os turnos mais produtivos;
-      Quais as categorias de tarefa mais realizadas;
-      Quais as categorias de metas mais realizadas;
     */
+
+    const taskGategoriesMostFinished =
+      this.mathHelper.taskCategoriesMostFinished(tasksFinished);
+
+    const goalGategoriesMostFinished =
+      this.mathHelper.goalCategoriesMostFinished(goalsFineshed);
 
     return {
       goals: {
         total: goals.length,
         finished: goalsFineshed.length,
-        percentage: goalsPercentage
+        percentage: goalsPercentage,
+        categories: {
+          mostFinished: goalGategoriesMostFinished
+        }
       },
       tasks: {
         total: tasks.length,
         finished: tasksFinished.length,
-        percentage: tasksPercentage
+        percentage: tasksPercentage,
+        categories: {
+          mostFinished: taskGategoriesMostFinished
+        }
       }
     };
   }

@@ -1,17 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CategoryRepositoryModule } from '../category/infrastructure/category.repository';
 import { GoalRepositoryModule } from '../goal/infrastructure/goal.repository';
 import { TaskRepositoryModule } from '../task/infrastructure/task.repository';
 import { ReportService } from './report.service';
 import { HelpersModule } from '../helpers/helpers.module';
 
 @Module({
-  imports: [
-    CategoryRepositoryModule,
-    GoalRepositoryModule,
-    TaskRepositoryModule,
-    HelpersModule
-  ],
+  imports: [GoalRepositoryModule, TaskRepositoryModule, HelpersModule],
   controllers: [],
   providers: [ReportService],
   exports: [ReportService]
