@@ -5,6 +5,8 @@ export enum reminderTypes {
 }
 
 export interface IReminderEntity {
+  description: string;
   type: reminderTypes;
-  creationDate: Date;
+  date: Date;
+  userId: number;
 }
