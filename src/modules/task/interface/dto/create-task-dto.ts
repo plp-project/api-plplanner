@@ -8,7 +8,10 @@ import {
   IsString,
   Length
 } from 'class-validator';
-import { TaskDuration, TaskStatus } from '../../infrastructure/model/interface';
+import {
+  taskDurations,
+  taskStatuses
+} from '../../infrastructure/model/interface';
 
 export class CreateTaskDTO implements Partial<TaskEntity> {
   @ApiProperty({ minLength: 3, maxLength: 255 })
@@ -17,14 +20,14 @@ export class CreateTaskDTO implements Partial<TaskEntity> {
   @Length(3, 255)
   readonly description: string;
 
-  @ApiPropertyOptional({ default: TaskStatus.TODO, enum: TaskStatus })
+  @ApiPropertyOptional({ default: taskStatuses.TODO, enum: taskStatuses })
   @IsOptional()
-  @IsEnum(TaskStatus)
-  readonly status: TaskStatus;
+  @IsEnum(taskStatuses)
+  readonly status: taskStatuses;
 
-  @ApiProperty({ enum: TaskDuration })
-  @IsEnum(TaskDuration)
-  readonly duration: TaskDuration;
+  @ApiProperty({ enum: taskDurations })
+  @IsEnum(taskDurations)
+  readonly duration: taskDurations;
 
   @ApiProperty()
   @IsNotEmpty()

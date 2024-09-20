@@ -7,7 +7,7 @@ import {
   Length
 } from 'class-validator';
 import { ReminderEntity } from '../../infrastructure/model';
-import { ReminderType } from '../../infrastructure/model/interface';
+import { reminderTypes } from '../../infrastructure/model/interface';
 
 export class CreateReminderDTO implements Partial<ReminderEntity> {
   @ApiProperty()
@@ -16,10 +16,10 @@ export class CreateReminderDTO implements Partial<ReminderEntity> {
   @IsString()
   readonly description: string;
 
-  @ApiProperty({ enum: ReminderType })
+  @ApiProperty({ enum: reminderTypes })
   @IsNotEmpty()
-  @IsEnum(ReminderType)
-  readonly type: ReminderType;
+  @IsEnum(reminderTypes)
+  readonly type: reminderTypes;
 
   @ApiProperty()
   @IsNotEmpty()

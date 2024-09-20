@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
-import { IReminderEntity, ReminderType } from './interface';
+import { IReminderEntity, reminderTypes } from './interface';
 import { UserEntity } from 'src/modules/user/infrastructure/model';
 
 @Entity({ name: 'reminder' })
@@ -14,11 +14,11 @@ export class ReminderEntity implements IReminderEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: 'enum', enum: reminderTypes })
+  type: reminderTypes;
+
   @Column()
   description: string;
-
-  @Column({ type: 'enum', enum: ReminderType })
-  type: ReminderType;
 
   @Column()
   date: Date;
