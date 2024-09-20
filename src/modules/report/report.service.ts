@@ -60,16 +60,24 @@ export class ReportService {
       tasks.length
     );
 
-    /* ! TODO
-      Destacar as semanas e meses mais produtivos;
-      Destacar os turnos mais produtivos;
-    */
-
     const taskGategoriesMostFinished =
       this.mathHelper.taskCategoriesMostFinished(tasksFinished);
 
     const goalGategoriesMostFinished =
       this.mathHelper.goalCategoriesMostFinished(goalsFineshed);
+
+    const weeksMostProductives = this.mathHelper.weeksMostProductives(
+      tasksFinished,
+      goalsFineshed
+    );
+
+    const monthsMostProductives = this.mathHelper.monthsMostProductives(
+      tasksFinished,
+      goalsFineshed
+    );
+
+    const shiftsMostProductives =
+      this.mathHelper.shiftsMostProductives(goalsFineshed);
 
     return {
       goals: {
@@ -87,6 +95,11 @@ export class ReportService {
         categories: {
           mostFinished: taskGategoriesMostFinished
         }
+      },
+      mostProductive: {
+        weeks: weeksMostProductives,
+        months: monthsMostProductives,
+        shifts: shiftsMostProductives
       }
     };
   }

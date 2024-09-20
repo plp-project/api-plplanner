@@ -72,6 +72,75 @@ export class MathHelper {
     return sortedCategoryIds.map((id) => categoryMap[Number(id)]);
   }
 
+  weeksMostProductives(tasks: TaskEntity[], goals: GoalEntity[]) {
+    const weekMap: { [key: string]: number } = {};
+    tasks
+      .concat(
+        goals.map(
+          (goal) => ({ ...goal, planningId: goal.id }) as unknown as TaskEntity
+        )
+      )
+      .forEach((task) => {
+        const week = this.getWeek(task.createdAt);
+        weekMap[week] = (weekMap[week] || 0) + 1;
+      });
+
+    const sortedWeeks = Object.keys(weekMap).sort(
+      (a, b) => weekMap[b] - weekMap[a]
+    );
+
+    return sortedWeeks;
+  }
+
+  monthsMostProductives(tasks: TaskEntity[], goals: GoalEntity[]) {
+    const monthMap: { [key: string]: number } = {};
+    tasks
+      .concat(
+        goals.map(
+          (goal) => ({ ...goal, planningId: goal.id }) as unknown as TaskEntity
+        )
+      )
+      .forEach((task) => {
+        const month = this.getMonth(task.createdAt);
+        monthMap[month] = (monthMap[month] || 0) + 1;
+      });
+
+    const sortedMonths = Object.keys(monthMap).sort(
+      (a, b) => monthMap[b] - monthMap[a]
+    );
+
+    return sortedMonths;
+  }
+
+  shiftsMostProductives(goals: GoalEntity[]) {
+    const shiftMap: { [key: string]: number } = {};
+    goals.forEach((goal) => {
+      const shift = goal.date.toISOString();
+      shiftMap[shift] = (shiftMap[shift] || 0) + 1;
+    });
+
+    const sortedShifts = Object.keys(shiftMap).sort(
+      (a, b) => shiftMap[b] - shiftMap[a]
+    );
+
+    return sortedShifts;
+  }
+
+  private getMonth(date: Date): string {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    return new Date(year, month).toISOString();
+  }
+
+  private getWeek(date: Date): string {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    const week = new Date(year, month, day);
+    week.setDate(day - week.getDay());
+    return week.toISOString();
+  }
+
   private calculateWeeklyPeriod(date: Date): {
     initialDate: Date;
     finalDate: Date;
