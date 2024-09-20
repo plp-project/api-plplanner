@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { GoalRepository } from './infrastructure/goal.repository';
-import { CreateGoalDTO } from './interface/dto/create-goal-dto';
+import { CreateGoalDTO } from './interface/dto/create-goal.dto';
 import { CategoryService } from '../category/category.service';
-import { UpdateGoalDTO } from './interface/dto/update-category.dto';
+import { UpdateGoalDTO } from './interface/dto/update-goal.dto';
 
 @Injectable()
 export class GoalService {

@@ -8,7 +8,7 @@ import {
   IsString,
   Length
 } from 'class-validator';
-import { GoalDuration, GoalStatus } from '../../infrastructure/model/interface';
+import { GoalDuration, goalStatus } from '../../infrastructure/model/interface';
 
 export class CreateGoalDTO implements Partial<GoalEntity> {
   @ApiProperty()
@@ -27,8 +27,13 @@ export class CreateGoalDTO implements Partial<GoalEntity> {
   @IsDateString()
   readonly date: Date;
 
-  @ApiPropertyOptional({ default: GoalStatus.TODO })
+  @ApiPropertyOptional({ default: goalStatus.TODO })
   @IsOptional()
-  @IsEnum(GoalStatus)
-  readonly status?: GoalStatus;
+  @IsEnum(goalStatus)
+  readonly status?: goalStatus;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  readonly name: string;
 }

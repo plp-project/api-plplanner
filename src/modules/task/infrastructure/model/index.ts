@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
-import { ITaskEntity, TaskDuration, TaskStatus } from './interface';
+import { ITaskEntity, taskDurations, taskStatuses } from './interface';
 import { CategoryEntity } from 'src/modules/category/infrastructure/model';
 import { PlanningEntity } from 'src/modules/planning/infrastructure/model';
 
@@ -17,11 +17,11 @@ export class TaskEntity implements ITaskEntity {
   @Column({ length: 255 })
   description: string;
 
-  @Column({ type: 'enum', enum: TaskStatus, default: TaskStatus.TODO })
-  status: TaskStatus;
+  @Column({ type: 'enum', enum: taskStatuses })
+  status: taskStatuses;
 
-  @Column({ type: 'enum', enum: TaskDuration })
-  duration: TaskDuration;
+  @Column({ type: 'enum', enum: taskDurations })
+  duration: taskDurations;
 
   @Column()
   categoryId: number;
