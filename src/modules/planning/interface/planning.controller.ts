@@ -6,7 +6,8 @@ import {
   Param,
   ParseIntPipe,
   Patch,
-  Post
+  Post,
+  Query
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PlanningService } from '../planning.service';
@@ -14,6 +15,7 @@ import { Auth } from 'src/modules/auth/decorators/auth.decorator';
 import { UserId } from 'src/modules/auth/decorators/user-id.decorator';
 import { CreatePlanningDTO } from './dto/create-planning-dto';
 import { UpdatePlanningDTO } from './dto/update-planning.dto';
+import { FindAllPlanningsQueryDTO } from './dto/find-all-planning-dto';
 
 @Auth()
 @Controller('planning')
@@ -29,8 +31,11 @@ export class PlanningController {
 
   @Get()
   @ApiOperation({ summary: 'Find all plannings by user' })
-  async findAll(@UserId() userId: number) {
-    return await this.planningService.findAllByUser(userId);
+  async findAll(
+    @UserId() userId: number,
+    @Query('period') period?: FindAllPlanningsQueryDTO
+  ) {
+    return await this.planningService.findAllByUser(userId, period.period);
   }
 
   @Get(':planningId')

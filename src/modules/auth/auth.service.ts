@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDTO } from './interface/dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { BcryptHelper } from '../helpers/bcrypt/bcrypt-helper.module';
+import { BcryptHelper } from '../helpers/bcrypt/bcrypt-helper';
 import { JwtPayloadDTO } from './interface/dto/jwt-payload';
 import { UserLoginDTO } from './interface/dto/user-login.dto';
 import { plainToClass } from 'class-transformer';
