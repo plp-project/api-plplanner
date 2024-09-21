@@ -35,7 +35,7 @@ export class ReportService {
     );
 
     const shiftsMostProductives = this.mathHelper.shiftsMostProductives(
-      goalsInfo.finished
+      tasksInfo.finished
     );
 
     return {
@@ -76,6 +76,7 @@ export class ReportService {
     return {
       all: goals,
       finished,
+      total: goals.length,
       percentage,
       categories: {
         mostFinished: categoriesMostFinished
@@ -110,6 +111,7 @@ export class ReportService {
     return {
       all: tasks,
       finished,
+      total: tasks.length,
       percentage,
       categories: {
         mostFinished: categoriesMostFinished
