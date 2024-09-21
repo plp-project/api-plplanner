@@ -3,7 +3,7 @@ import { GoalRepository } from '../goal/infrastructure/goal.repository';
 import { TaskRepository } from '../task/infrastructure/task.repository';
 import { MathHelper } from '../helpers/math/math-helper.module';
 import { CreateReportDTO } from './interface/dto/create-report.dto';
-import { goalStatus } from '../goal/infrastructure/model/interface';
+import { goalStatuses } from '../goal/infrastructure/model/interface';
 import { LessThanOrEqual, MoreThanOrEqual, And } from 'typeorm';
 import { taskStatuses } from '../task/infrastructure/model/interface';
 
@@ -82,7 +82,7 @@ export class ReportService {
     });
 
     const goalsFinished = goals.filter(
-      (goal) => goal.status === goalStatus.SUCCESS
+      (goal) => goal.status === goalStatuses.SUCCESS
     );
 
     const goalsPercentage = this.mathHelper.calculatePercentage(
