@@ -21,44 +21,11 @@ export class ReportService {
       date.period
     );
 
-    const goals = await this.goalRepository.find({
-      userId: userId,
-      createdAt: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
-    });
+    const { goals, goalsFinished, goalsPercentage } =
+      await this.goalsOperations(userId, initialDate, finalDate);
 
-    const goalsFinished = goals.filter(
-      (goal) => goal.status === goalStatus.SUCCESS
-    );
-
-    const goalsPercentage = this.mathHelper.calculatePercentage(
-      goalsFinished.length,
-      goals.length
-    );
-
-    const tasks = await this.taskRepository.find(
-      {
-        planning: {
-          userId: userId,
-          createdAt: And(
-            MoreThanOrEqual(initialDate),
-            LessThanOrEqual(finalDate)
-          )
-        }
-      },
-      {
-        planning: true,
-        category: true
-      }
-    );
-
-    const tasksFinished = tasks.filter(
-      (task) => task.status === taskStatuses.EXECUTED
-    );
-
-    const tasksPercentage = this.mathHelper.calculatePercentage(
-      tasksFinished.length,
-      tasks.length
-    );
+    const { tasks, tasksFinished, tasksPercentage } =
+      await this.tasksOperations(userId, initialDate, finalDate);
 
     const taskGategoriesMostFinished =
       this.mathHelper.taskCategoriesMostFinished(tasksFinished);
@@ -104,5 +71,49 @@ export class ReportService {
     };
   }
 
-  private;
+  private async goalsOperations(
+    userId: number,
+    initialDate: Date,
+    finalDate: Date
+  ) {
+    const goals = await this.goalRepository.find({
+      userId: userId,
+      createdAt: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
+    });
+
+    const goalsFinished = goals.filter(
+      (goal) => goal.status === goalStatus.SUCCESS
+    );
+
+    const goalsPercentage = this.mathHelper.calculatePercentage(
+      goalsFinished.length,
+      goals.length
+    );
+
+    return { goals, goalsFinished, goalsPercentage };
+  }
+
+  private async tasksOperations(
+    userId: number,
+    initialDate: Date,
+    finalDate: Date
+  ) {
+    const tasks = await this.taskRepository.find({
+      planning: {
+        userId: userId,
+        createdAt: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
+      }
+    });
+
+    const tasksFinished = tasks.filter(
+      (task) => task.status === taskStatuses.EXECUTED
+    );
+
+    const tasksPercentage = this.mathHelper.calculatePercentage(
+      tasksFinished.length,
+      tasks.length
+    );
+
+    return { tasks, tasksFinished, tasksPercentage };
+  }
 }
