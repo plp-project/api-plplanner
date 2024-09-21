@@ -6,6 +6,7 @@ import { CreateReportDTO } from './interface/dto/create-report.dto';
 import { goalStatuses } from '../goal/infrastructure/model/interface';
 import { LessThanOrEqual, MoreThanOrEqual, And } from 'typeorm';
 import { taskStatuses } from '../task/infrastructure/model/interface';
+import { CategoryEntity } from '../category/infrastructure/model';
 
 @Injectable()
 export class ReportService {
@@ -70,8 +71,9 @@ export class ReportService {
       goals.length
     );
 
-    const categoriesMostFinished =
-      this.mathHelper.goalCategoriesMostFinished(finished);
+    const categoriesMostFinished = this.sortCategoriesMostFinished(
+      finished.map((goal) => goal.category)
+    );
 
     return {
       all: goals,
@@ -105,8 +107,9 @@ export class ReportService {
       tasks.length
     );
 
-    const categoriesMostFinished =
-      this.mathHelper.taskCategoriesMostFinished(finished);
+    const categoriesMostFinished = this.sortCategoriesMostFinished(
+      finished.map((task) => task.category)
+    );
 
     return {
       all: tasks,
@@ -117,5 +120,25 @@ export class ReportService {
         mostFinished: categoriesMostFinished
       }
     };
+  }
+
+  private sortCategoriesMostFinished(categories: CategoryEntity[]) {
+    const categoryMap = new Map<string, number>();
+
+    categories.forEach((category) => {
+      const categoryName = category.name;
+
+      if (categoryMap.has(categoryName)) {
+        categoryMap.set(categoryName, categoryMap.get(categoryName) + 1);
+      } else {
+        categoryMap.set(categoryName, 1);
+      }
+    });
+
+    const sortedCategories = Array.from(categoryMap.entries())
+      .map(([category, count]) => ({ category, count }))
+      .sort((a, b) => b.count - a.count);
+
+    return sortedCategories;
   }
 }
