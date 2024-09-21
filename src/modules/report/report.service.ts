@@ -15,54 +15,34 @@ export class ReportService {
     private readonly mathHelper: MathHelper
   ) {}
 
-  async create(userId: number, date: CreateReportDTO) {
+  async create(userId: number, createReportDTO: CreateReportDTO) {
     const { initialDate, finalDate } = this.mathHelper.calculatePeriod(
-      date.date,
-      date.period
+      createReportDTO.date,
+      createReportDTO.period
     );
 
-    const { goals, goalsFinished, goalsPercentage } =
-      await this.goalsOperations(userId, initialDate, finalDate);
-
-    const { tasks, tasksFinished, tasksPercentage } =
-      await this.tasksOperations(userId, initialDate, finalDate);
-
-    const taskGategoriesMostFinished =
-      this.mathHelper.taskCategoriesMostFinished(tasksFinished);
-
-    const goalGategoriesMostFinished =
-      this.mathHelper.goalCategoriesMostFinished(goalsFinished);
+    const goalsInfo = await this.getGoalsInfo(userId, initialDate, finalDate);
+    const tasksInfo = await this.getTasksInfo(userId, initialDate, finalDate);
 
     const weeksMostProductives = this.mathHelper.weeksMostProductives(
-      tasksFinished,
-      goalsFinished
+      tasksInfo.finished,
+      goalsInfo.finished
     );
 
     const monthsMostProductives = this.mathHelper.monthsMostProductives(
-      tasksFinished,
-      goalsFinished
+      tasksInfo.finished,
+      goalsInfo.finished
     );
 
-    const shiftsMostProductives =
-      this.mathHelper.shiftsMostProductives(goalsFinished);
+    const shiftsMostProductives = this.mathHelper.shiftsMostProductives(
+      goalsInfo.finished
+    );
 
     return {
-      goals: {
-        total: goals.length,
-        finished: goalsFinished.length,
-        percentage: goalsPercentage,
-        categories: {
-          mostFinished: goalGategoriesMostFinished
-        }
-      },
-      tasks: {
-        total: tasks.length,
-        finished: tasksFinished.length,
-        percentage: tasksPercentage,
-        categories: {
-          mostFinished: taskGategoriesMostFinished
-        }
-      },
+      initialDate,
+      finalDate,
+      goals: goalsInfo,
+      tasks: tasksInfo,
       mostProductive: {
         weeks: weeksMostProductives,
         months: monthsMostProductives,
@@ -71,49 +51,59 @@ export class ReportService {
     };
   }
 
-  private async goalsOperations(
-    userId: number,
-    initialDate: Date,
-    finalDate: Date
-  ) {
+  async getGoalsInfo(userId: number, initialDate: Date, finalDate: Date) {
     const goals = await this.goalRepository.find({
       userId: userId,
-      createdAt: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
+      date: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
     });
 
-    const goalsFinished = goals.filter(
-      (goal) => goal.status === goalStatus.SUCCESS
-    );
+    const finished = goals.filter((goal) => goal.status === goalStatus.SUCCESS);
 
-    const goalsPercentage = this.mathHelper.calculatePercentage(
-      goalsFinished.length,
+    const percentage = this.mathHelper.calculatePercentage(
+      finished.length,
       goals.length
     );
 
-    return { goals, goalsFinished, goalsPercentage };
+    const categoriesMostFinished =
+      this.mathHelper.goalCategoriesMostFinished(finished);
+
+    return {
+      all: goals,
+      finished,
+      percentage,
+      categories: {
+        mostFinished: categoriesMostFinished
+      }
+    };
   }
 
-  private async tasksOperations(
-    userId: number,
-    initialDate: Date,
-    finalDate: Date
-  ) {
+  async getTasksInfo(userId: number, initialDate: Date, finalDate: Date) {
     const tasks = await this.taskRepository.find({
       planning: {
-        userId: userId,
-        createdAt: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
+        userId,
+        day: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
       }
     });
 
-    const tasksFinished = tasks.filter(
+    const finished = tasks.filter(
       (task) => task.status === taskStatuses.EXECUTED
     );
 
-    const tasksPercentage = this.mathHelper.calculatePercentage(
-      tasksFinished.length,
+    const percentage = this.mathHelper.calculatePercentage(
+      finished.length,
       tasks.length
     );
 
-    return { tasks, tasksFinished, tasksPercentage };
+    const categoriesMostFinished =
+      this.mathHelper.taskCategoriesMostFinished(finished);
+
+    return {
+      all: tasks,
+      finished,
+      percentage,
+      categories: {
+        mostFinished: categoriesMostFinished
+      }
+    };
   }
 }

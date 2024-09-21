@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsDateString, IsEnum, IsNotEmpty } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty } from 'class-validator';
 
 export enum reportPeriods {
   WEEKLY = 'weekly',
@@ -10,7 +10,7 @@ export enum reportPeriods {
 
 export class CreateReportDTO {
   @ApiProperty()
-  @IsDateString()
+  @IsDate()
   @IsNotEmpty()
   @Transform(({ value }) => new Date(value))
   readonly date: Date;

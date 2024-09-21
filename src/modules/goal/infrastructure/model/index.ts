@@ -35,7 +35,10 @@ export class GoalEntity implements IGoalEntity {
   @Column()
   categoryId: number;
 
-  @OneToOne(() => CategoryEntity, { createForeignKeyConstraints: false })
+  @OneToOne(() => CategoryEntity, {
+    createForeignKeyConstraints: false,
+    eager: true
+  })
   @JoinColumn()
   category: CategoryEntity;
 
