@@ -26,12 +26,12 @@ export class ReportService {
       createdAt: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
     });
 
-    const goalsFineshed = goals.filter(
+    const goalsFinished = goals.filter(
       (goal) => goal.status === goalStatus.SUCCESS
     );
 
     const goalsPercentage = this.mathHelper.calculatePercentage(
-      goalsFineshed.length,
+      goalsFinished.length,
       goals.length
     );
 
@@ -64,25 +64,25 @@ export class ReportService {
       this.mathHelper.taskCategoriesMostFinished(tasksFinished);
 
     const goalGategoriesMostFinished =
-      this.mathHelper.goalCategoriesMostFinished(goalsFineshed);
+      this.mathHelper.goalCategoriesMostFinished(goalsFinished);
 
     const weeksMostProductives = this.mathHelper.weeksMostProductives(
       tasksFinished,
-      goalsFineshed
+      goalsFinished
     );
 
     const monthsMostProductives = this.mathHelper.monthsMostProductives(
       tasksFinished,
-      goalsFineshed
+      goalsFinished
     );
 
     const shiftsMostProductives =
-      this.mathHelper.shiftsMostProductives(goalsFineshed);
+      this.mathHelper.shiftsMostProductives(goalsFinished);
 
     return {
       goals: {
         total: goals.length,
-        finished: goalsFineshed.length,
+        finished: goalsFinished.length,
         percentage: goalsPercentage,
         categories: {
           mostFinished: goalGategoriesMostFinished
@@ -103,4 +103,6 @@ export class ReportService {
       }
     };
   }
+
+  private;
 }
