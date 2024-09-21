@@ -7,7 +7,8 @@ import { TaskEntity } from 'src/modules/task/infrastructure/model';
 export class MathHelper {
   calculatePercentage(part: number, total: number): number {
     if (total === 0) return 0;
-    return (part / total) * 100;
+    const percentage = (part / total) * 100;
+    return Math.round(percentage * 100) / 100;
   }
 
   calculatePeriod(
@@ -26,50 +27,39 @@ export class MathHelper {
     }
   }
 
-  taskCategoriesMostFinished(tasks: TaskEntity[]): string[] {
-    const categoryMap: { [key: number]: string } = {};
-    tasks.forEach((task) => {
-      if (task.category) {
-        categoryMap[task.category.id] = task.category.name;
-      }
-    });
+  private calculateWeeklyPeriod(date: Date): {
+    initialDate: Date;
+    finalDate: Date;
+  } {
+    const initialDate = new Date(date);
+    const finalDate = new Date(date);
 
-    const categoryCount: { [key: number]: number } = {};
-    tasks.forEach((task) => {
-      const categoryId = task.category?.id;
-      if (categoryId) {
-        categoryCount[categoryId] = (categoryCount[categoryId] || 0) + 1;
-      }
-    });
+    finalDate.setDate(finalDate.getDate() + 7);
 
-    const sortedCategoryIds = Object.keys(categoryCount).sort(
-      (a, b) => categoryCount[Number(b)] - categoryCount[Number(a)]
-    );
-
-    return sortedCategoryIds.map((id) => categoryMap[Number(id)]);
+    return {
+      initialDate: initialDate,
+      finalDate: finalDate
+    };
   }
 
-  goalCategoriesMostFinished(goals: GoalEntity[]): string[] {
-    const categoryMap: { [key: number]: string } = {};
-    goals.forEach((goal) => {
-      if (goal.category) {
-        categoryMap[goal.category.id] = goal.category.name;
-      }
-    });
+  private calculateMonthlyPeriod(date: Date): {
+    initialDate: Date;
+    finalDate: Date;
+  } {
+    const initialDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    const finalDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-    const categoryCount: { [key: number]: number } = {};
-    goals.forEach((goal) => {
-      const categoryId = goal.category?.id;
-      if (categoryId) {
-        categoryCount[categoryId] = (categoryCount[categoryId] || 0) + 1;
-      }
-    });
+    return { initialDate, finalDate };
+  }
 
-    const sortedCategoryIds = Object.keys(categoryCount).sort(
-      (a, b) => categoryCount[Number(b)] - categoryCount[Number(a)]
-    );
+  private calculateYearlyPeriod(date: Date): {
+    initialDate: Date;
+    finalDate: Date;
+  } {
+    const initialDate = new Date(date.getFullYear(), 0, 1);
+    const finalDate = new Date(date.getFullYear(), 11, 31);
 
-    return sortedCategoryIds.map((id) => categoryMap[Number(id)]);
+    return { initialDate, finalDate };
   }
 
   weeksMostProductives(tasks: TaskEntity[], goals: GoalEntity[]) {
@@ -139,40 +129,5 @@ export class MathHelper {
     const week = new Date(year, month, day);
     week.setDate(day - week.getDay());
     return week.toISOString();
-  }
-
-  private calculateWeeklyPeriod(date: Date): {
-    initialDate: Date;
-    finalDate: Date;
-  } {
-    const initialDate = new Date(date);
-    const finalDate = new Date(date);
-
-    finalDate.setDate(finalDate.getDate() + 7);
-
-    return {
-      initialDate: initialDate,
-      finalDate: finalDate
-    };
-  }
-
-  private calculateMonthlyPeriod(date: Date): {
-    initialDate: Date;
-    finalDate: Date;
-  } {
-    const initialDate = new Date(date.getFullYear(), date.getMonth(), 1);
-    const finalDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-    return { initialDate, finalDate };
-  }
-
-  private calculateYearlyPeriod(date: Date): {
-    initialDate: Date;
-    finalDate: Date;
-  } {
-    const initialDate = new Date(date.getFullYear(), 0, 1);
-    const finalDate = new Date(date.getFullYear(), 11, 31);
-
-    return { initialDate, finalDate };
   }
 }
