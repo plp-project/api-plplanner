@@ -34,9 +34,4 @@ export class CreateGoalDTO implements Partial<GoalEntity> {
   @IsOptional()
   @IsEnum(goalStatuses)
   readonly status?: goalStatuses;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  readonly name: string;
 }

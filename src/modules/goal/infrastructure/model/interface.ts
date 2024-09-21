@@ -6,7 +6,6 @@ export enum goalStatuses {
 }
 
 export interface IGoalEntity {
-  name: string;
   status?: goalStatuses;
   description: string;
   duration: GoalDuration;
