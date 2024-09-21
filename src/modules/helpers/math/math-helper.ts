@@ -70,12 +70,19 @@ export class MathHelper {
     tasks
       .concat(
         goals.map(
-          (goal) => ({ ...goal, planningId: goal.id }) as unknown as TaskEntity
+          (goal) =>
+            ({
+              ...goal,
+              planningId: goal.id,
+              createdAt: goal.date
+            }) as unknown as TaskEntity
         )
       )
       .forEach((task) => {
-        const weekStart = this.getWeekStart(task.createdAt);
-        const weekEnd = this.getWeekEnd(task.createdAt);
+        const weekStart = this.getWeekStart(
+          task.planning?.day || task.createdAt
+        );
+        const weekEnd = this.getWeekEnd(task.createdAt || task.planning?.day);
 
         const key = `${weekStart}-${weekEnd}`;
         weekMap[key] = weekMap[key] || {
@@ -102,11 +109,16 @@ export class MathHelper {
     tasks
       .concat(
         goals.map(
-          (goal) => ({ ...goal, planningId: goal.id }) as unknown as TaskEntity
+          (goal) =>
+            ({
+              ...goal,
+              planningId: goal.id,
+              createdAt: goal.date
+            }) as unknown as TaskEntity
         )
       )
       .forEach((task) => {
-        const month = this.getMonthOnly(task.createdAt);
+        const month = this.getMonthOnly(task.createdAt || task.planning?.day);
         monthMap[month] = (monthMap[month] || 0) + 1;
       });
 
@@ -119,8 +131,9 @@ export class MathHelper {
 
   shiftsMostProductives(tasks: TaskEntity[]) {
     const shiftMap: { [key: string]: number } = {};
-    tasks.forEach((goal) => {
-      const shift = goal.duration;
+
+    tasks.forEach((task) => {
+      const shift = task.duration;
       shiftMap[shift] = (shiftMap[shift] || 0) + 1;
     });
 
@@ -128,7 +141,10 @@ export class MathHelper {
       (a, b) => shiftMap[b] - shiftMap[a]
     );
 
-    return sortedShifts;
+    return sortedShifts.map((shift) => ({
+      duration: shift,
+      count: shiftMap[shift]
+    }));
   }
 
   private getWeekStart(date: Date): string {
@@ -148,21 +164,6 @@ export class MathHelper {
     const week = new Date(date);
     const day = week.getDate() - week.getDay() + 6;
     week.setDate(day);
-    return week.toISOString();
-  }
-
-  private getMonth(date: Date): string {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    return new Date(year, month).toISOString();
-  }
-
-  private getWeek(date: Date): string {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
-    const week = new Date(year, month, day);
-    week.setDate(day - week.getDay());
     return week.toISOString();
   }
 }
