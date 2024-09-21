@@ -8,7 +8,10 @@ import {
   IsString,
   Length
 } from 'class-validator';
-import { GoalDuration, goalStatuses } from '../../infrastructure/model/interface';
+import {
+  GoalDuration,
+  goalStatuses
+} from '../../infrastructure/model/interface';
 
 export class CreateGoalDTO implements Partial<GoalEntity> {
   @ApiProperty()

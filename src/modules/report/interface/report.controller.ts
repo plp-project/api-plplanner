@@ -10,7 +10,7 @@ import { CreateReportDTO } from './dto/create-report.dto';
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
-  @Post('')
+  @Post()
   @ApiOperation({ summary: 'Create a report' })
   @Auth()
   async create(@UserId() userId: number, @Body() data: CreateReportDTO) {

@@ -23,7 +23,7 @@ export class CreateTaskDTO implements Partial<TaskEntity> {
   @ApiPropertyOptional({ default: taskStatuses.TODO, enum: taskStatuses })
   @IsOptional()
   @IsEnum(taskStatuses)
-  readonly status: taskStatuses;
+  readonly status = taskStatuses.TODO;
 
   @ApiProperty({ enum: taskDurations })
   @IsEnum(taskDurations)

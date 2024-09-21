@@ -148,22 +148,20 @@ export class MathHelper {
     const initialDate = new Date(date);
     const finalDate = new Date(date);
 
-    initialDate.setDate(date.getDate() - date.getDay());
-    finalDate.setDate(date.getDate() + (6 - date.getDay()));
+    finalDate.setDate(finalDate.getDate() + 7);
 
-    return { initialDate, finalDate };
+    return {
+      initialDate: initialDate,
+      finalDate: finalDate
+    };
   }
 
   private calculateMonthlyPeriod(date: Date): {
     initialDate: Date;
     finalDate: Date;
   } {
-    const initialDate = new Date(date);
-    const finalDate = new Date(date);
-
-    initialDate.setDate(1);
-    finalDate.setMonth(date.getMonth() + 1);
-    finalDate.setDate(0);
+    const initialDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    const finalDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
     return { initialDate, finalDate };
   }
@@ -172,13 +170,8 @@ export class MathHelper {
     initialDate: Date;
     finalDate: Date;
   } {
-    const initialDate = new Date(date);
-    const finalDate = new Date(date);
-
-    initialDate.setMonth(0);
-    initialDate.setDate(1);
-    finalDate.setMonth(11);
-    finalDate.setDate(31);
+    const initialDate = new Date(date.getFullYear(), 0, 1);
+    const finalDate = new Date(date.getFullYear(), 11, 31);
 
     return { initialDate, finalDate };
   }

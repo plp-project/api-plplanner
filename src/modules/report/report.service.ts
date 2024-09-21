@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GoalRepository } from '../goal/infrastructure/goal.repository';
 import { TaskRepository } from '../task/infrastructure/task.repository';
-import { MathHelper } from '../helpers/math/math-helper.module';
+import { MathHelper } from '../helpers/math/math-helper';
 import { CreateReportDTO } from './interface/dto/create-report.dto';
 import { goalStatuses } from '../goal/infrastructure/model/interface';
 import { LessThanOrEqual, MoreThanOrEqual, And } from 'typeorm';
