@@ -7,12 +7,14 @@ import { CategoryRepository } from './infrastructure/category.repository';
 import { CreateCategoryDTO } from './interface/dto/create-category-dto';
 import { UpdateCategoryDTO } from './interface/dto/update-category-dto';
 import { GoalRepository } from '../goal/infrastructure/goal.repository';
+import { TaskRepository } from '../task/infrastructure/task.repository';
 
 @Injectable()
 export class CategoryService {
   constructor(
     private readonly categoryRepository: CategoryRepository,
-    private readonly goalRepository: GoalRepository
+    private readonly goalRepository: GoalRepository,
+    private readonly taskRepository: TaskRepository
   ) {}
 
   async create(userId: number, category: CreateCategoryDTO) {
@@ -47,9 +49,12 @@ export class CategoryService {
   async delete(userId: number, categoryId: number) {
     await this.findOneByUser(userId, categoryId);
     const goalWithCategory = await this.goalRepository.findOne({ categoryId });
+    const taskWithCategory = await this.taskRepository.findOne({ categoryId });
 
-    if (goalWithCategory)
-      throw new ConflictException("This category can't be deleted.");
+    if (goalWithCategory || taskWithCategory)
+      throw new ConflictException(
+        "This category can't be deleted because it has goals or tasks associated with it."
+      );
 
     return await this.categoryRepository.deleteById(categoryId);
   }
