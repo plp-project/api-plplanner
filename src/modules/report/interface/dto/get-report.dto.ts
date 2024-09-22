@@ -5,7 +5,10 @@ import {
 } from './entity-report-dto';
 
 interface MostProductive {
-  weeks: { week: string; count: number }[];
+  weeks: {
+    week: { weekOfYear: string; start: Date; end: Date };
+    count: number;
+  }[];
   months: { month: string; count: number }[];
   shifts: { shift: string; count: number }[];
 }

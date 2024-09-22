@@ -30,10 +30,9 @@ export class MathHelper {
     initialDate: Date;
     finalDate: Date;
   } {
-    const initialDate = new Date(date);
-    const finalDate = new Date(date);
-
-    finalDate.setDate(finalDate.getDate() + 7);
+    const range = this.getRangeOfWeek(date);
+    const initialDate = range.startOfWeek;
+    const finalDate = range.endOfWeek;
 
     return { initialDate, finalDate };
   }
@@ -59,13 +58,22 @@ export class MathHelper {
   }
 
   getWeekOfYear(date: Date) {
-    const week = moment(date).format('[Semana] W [de] Y');
-    return week;
+    const weekOfYear = moment(date).format('[Semana] W [de] Y');
+    return weekOfYear;
   }
 
   getMonthOfYear(date: Date) {
-    const month = moment(date).format('M [de] Y');
-    return month;
+    const monthOfYear = date.toLocaleDateString('pt-BR', {
+      year: 'numeric',
+      month: 'long'
+    });
+    return monthOfYear;
+  }
+
+  getRangeOfWeek(date: Date) {
+    const startOfWeek = moment(date).startOf('isoWeek').toDate();
+    const endOfWeek = moment(date).endOf('isoWeek').toDate();
+    return { startOfWeek, endOfWeek };
   }
 
   countOccurrences<T, K>(items: T[], keyExtractor: (item: T) => K) {

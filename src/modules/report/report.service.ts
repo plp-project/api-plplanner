@@ -39,8 +39,8 @@ export class ReportService {
     const datesTask = tasks.finished.map((task) => task.planning.day);
     const dates = datesGoal.concat(datesTask);
 
-    const weeksMostProductives = this.getMostProductivePeriods(dates, 'week');
-    const monthsMostProductives = this.getMostProductivePeriods(dates, 'month');
+    const weeksMostProductives = this.getMostProductiveWeeks(dates);
+    const monthsMostProductives = this.getMostProductiveMonths(dates);
     const shiftsMostProductives = this.getMostProductiveShifts(tasks.finished);
 
     const mostProductives = {
@@ -143,15 +143,23 @@ export class ReportService {
     return sortedCategories;
   }
 
-  private getMostProductivePeriods(dates: Date[], period: 'week' | 'month') {
-    const keyExtractor = (date: Date) =>
-      period === 'week'
-        ? this.mathHelper.getWeekOfYear(date)
-        : this.mathHelper.getMonthOfYear(date);
+  private getMostProductiveWeeks(dates: Date[]) {
+    const keyExtractor = (date: Date) => {
+      const range = this.mathHelper.getRangeOfWeek(date);
+      const weekOfYear = this.mathHelper.getWeekOfYear(date);
+      return { weekOfYear, start: range.startOfWeek, end: range.endOfWeek };
+    };
 
     const periodsMap = this.mathHelper.countOccurrences(dates, keyExtractor);
+    const sortedPeriods = this.mathHelper.sortMap(periodsMap, 'week');
+    return sortedPeriods;
+  }
 
-    const sortedPeriods = this.mathHelper.sortMap(periodsMap, period);
+  private getMostProductiveMonths(dates: Date[]) {
+    const keyExtractor = (date: Date) => this.mathHelper.getMonthOfYear(date);
+    const periodsMap = this.mathHelper.countOccurrences(dates, keyExtractor);
+
+    const sortedPeriods = this.mathHelper.sortMap(periodsMap, 'month');
     return sortedPeriods;
   }
 
