@@ -8,6 +8,7 @@ import { CreateCategoryDTO } from './interface/dto/create-category-dto';
 import { UpdateCategoryDTO } from './interface/dto/update-category-dto';
 import { GoalRepository } from '../goal/infrastructure/goal.repository';
 import { TaskRepository } from '../task/infrastructure/task.repository';
+import { ILike } from 'typeorm';
 
 @Injectable()
 export class CategoryService {
@@ -18,6 +19,14 @@ export class CategoryService {
   ) {}
 
   async create(userId: number, category: CreateCategoryDTO) {
+    const categoryExists = await this.categoryRepository.findOne({
+      name: ILike(category.name),
+      userId
+    });
+
+    if (categoryExists)
+      throw new ConflictException('Category with this name already exists.');
+
     return await this.categoryRepository.create({ ...category, userId });
   }
 
