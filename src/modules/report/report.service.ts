@@ -7,6 +7,13 @@ import { goalStatuses } from '../goal/infrastructure/model/interface';
 import { LessThanOrEqual, MoreThanOrEqual, And } from 'typeorm';
 import { taskStatuses } from '../task/infrastructure/model/interface';
 import { CategoryEntity } from '../category/infrastructure/model';
+import { TaskEntity } from '../task/infrastructure/model';
+import { GetReportDTO } from './interface/dto/get-report.dto';
+import { CategoriesReportInfoDTO } from './interface/dto/categories-report.dto';
+import {
+  GoalsReportInfoDTO,
+  TasksReportInfoDTO
+} from './interface/dto/entity-report-dto';
 
 @Injectable()
 export class ReportService {
@@ -16,47 +23,48 @@ export class ReportService {
     private readonly mathHelper: MathHelper
   ) {}
 
-  async create(userId: number, createReportDTO: CreateReportDTO) {
+  async create(
+    userId: number,
+    createReportDTO: CreateReportDTO
+  ): Promise<GetReportDTO> {
     const { initialDate, finalDate } = this.mathHelper.calculatePeriod(
       createReportDTO.date,
       createReportDTO.period
     );
 
-    const goalsInfo = await this.getGoalsInfo(userId, initialDate, finalDate);
-    const tasksInfo = await this.getTasksInfo(userId, initialDate, finalDate);
+    const goals = await this.getGoalsInfo(userId, initialDate, finalDate);
+    const tasks = await this.getTasksInfo(userId, initialDate, finalDate);
 
-    const weeksMostProductives = this.mathHelper.weeksMostProductives(
-      tasksInfo.finished,
-      goalsInfo.finished
-    );
+    const datesGoal = goals.finished.map((goal) => goal.date);
+    const datesTask = tasks.finished.map((task) => task.planning.day);
+    const dates = datesGoal.concat(datesTask);
 
-    const monthsMostProductives = this.mathHelper.monthsMostProductives(
-      tasksInfo.finished,
-      goalsInfo.finished
-    );
+    const weeksMostProductives = this.getMostProductivePeriods(dates, 'week');
+    const monthsMostProductives = this.getMostProductivePeriods(dates, 'month');
+    const shiftsMostProductives = this.getMostProductiveShifts(tasks.finished);
 
-    const shiftsMostProductives = this.mathHelper.shiftsMostProductives(
-      tasksInfo.finished
-    );
+    const mostProductives = {
+      weeks: weeksMostProductives,
+      months: monthsMostProductives,
+      shifts: shiftsMostProductives
+    };
 
-    return {
+    const report = new GetReportDTO(
       initialDate,
       finalDate,
-      goals: goalsInfo,
-      tasks: tasksInfo,
-      mostProductive: {
-        weeks: weeksMostProductives,
-        months: monthsMostProductives,
-        shifts: shiftsMostProductives
-      }
-    };
+      goals,
+      tasks,
+      mostProductives
+    );
+
+    return report;
   }
 
   private async getGoalsInfo(
     userId: number,
     initialDate: Date,
     finalDate: Date
-  ) {
+  ): Promise<GoalsReportInfoDTO> {
     const goals = await this.goalRepository.find({
       userId: userId,
       date: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
@@ -71,14 +79,13 @@ export class ReportService {
       goals.length
     );
 
-    const categoriesMostFinished = this.sortCategoriesMostFinished(
+    const categoriesMostFinished = this.getCategoriesMostFinished(
       finished.map((goal) => goal.category)
     );
 
     return {
       all: goals,
       finished,
-      total: goals.length,
       percentage,
       categories: {
         mostFinished: categoriesMostFinished
@@ -90,13 +97,16 @@ export class ReportService {
     userId: number,
     initialDate: Date,
     finalDate: Date
-  ) {
-    const tasks = await this.taskRepository.find({
-      planning: {
-        userId,
-        day: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
-      }
-    });
+  ): Promise<TasksReportInfoDTO> {
+    const tasks = await this.taskRepository.find(
+      {
+        planning: {
+          userId,
+          day: And(MoreThanOrEqual(initialDate), LessThanOrEqual(finalDate))
+        }
+      },
+      { planning: true }
+    );
 
     const finished = tasks.filter(
       (task) => task.status === taskStatuses.EXECUTED
@@ -107,14 +117,13 @@ export class ReportService {
       tasks.length
     );
 
-    const categoriesMostFinished = this.sortCategoriesMostFinished(
+    const categoriesMostFinished = this.getCategoriesMostFinished(
       finished.map((task) => task.category)
     );
 
     return {
       all: tasks,
       finished,
-      total: tasks.length,
       percentage,
       categories: {
         mostFinished: categoriesMostFinished
@@ -122,23 +131,37 @@ export class ReportService {
     };
   }
 
-  private sortCategoriesMostFinished(categories: CategoryEntity[]) {
-    const categoryMap = new Map<string, number>();
+  private getCategoriesMostFinished(
+    categories: CategoryEntity[]
+  ): CategoriesReportInfoDTO[] {
+    const categoriesMap = this.mathHelper.countOccurrences(
+      categories,
+      (category) => category.name
+    );
 
-    categories.forEach((category) => {
-      const categoryName = category.name;
-
-      if (categoryMap.has(categoryName)) {
-        categoryMap.set(categoryName, categoryMap.get(categoryName) + 1);
-      } else {
-        categoryMap.set(categoryName, 1);
-      }
-    });
-
-    const sortedCategories = Array.from(categoryMap.entries())
-      .map(([category, count]) => ({ category, count }))
-      .sort((a, b) => b.count - a.count);
-
+    const sortedCategories = this.mathHelper.sortMap(categoriesMap, 'category');
     return sortedCategories;
+  }
+
+  private getMostProductivePeriods(dates: Date[], period: 'week' | 'month') {
+    const keyExtractor = (date: Date) =>
+      period === 'week'
+        ? this.mathHelper.getWeekOfYear(date)
+        : this.mathHelper.getMonthOfYear(date);
+
+    const periodsMap = this.mathHelper.countOccurrences(dates, keyExtractor);
+
+    const sortedPeriods = this.mathHelper.sortMap(periodsMap, period);
+    return sortedPeriods;
+  }
+
+  private getMostProductiveShifts(tasks: TaskEntity[]) {
+    const shiftsMap = this.mathHelper.countOccurrences(
+      tasks,
+      (task: TaskEntity) => task.duration
+    );
+
+    const sortedShifts = this.mathHelper.sortMap(shiftsMap, 'shift');
+    return sortedShifts;
   }
 }
