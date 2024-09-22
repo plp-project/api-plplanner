@@ -14,7 +14,13 @@ import {
 } from '../../infrastructure/model/interface';
 
 export class CreateGoalDTO implements Partial<GoalEntity> {
-  @ApiProperty()
+  @ApiProperty({ minLength: 3, maxLength: 30 })
+  @IsString()
+  @IsNotEmpty()
+  @Length(3, 30)
+  readonly name: string;
+
+  @ApiProperty({ minLength: 3, maxLength: 255 })
   @IsString()
   @IsNotEmpty()
   @Length(3, 255)

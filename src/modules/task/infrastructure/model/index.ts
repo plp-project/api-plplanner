@@ -14,6 +14,9 @@ export class TaskEntity implements ITaskEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  name: string;
+
   @Column({ length: 255 })
   description: string;
 

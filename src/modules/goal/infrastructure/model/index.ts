@@ -18,6 +18,9 @@ export class GoalEntity implements IGoalEntity {
   id: number;
 
   @Column()
+  name: string;
+
+  @Column()
   description: string;
 
   @Column({ type: 'enum', enum: GoalDuration })

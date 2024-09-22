@@ -14,6 +14,12 @@ import {
 } from '../../infrastructure/model/interface';
 
 export class CreateTaskDTO implements Partial<TaskEntity> {
+  @ApiProperty({ minLength: 3, maxLength: 30 })
+  @IsString()
+  @IsNotEmpty()
+  @Length(3, 30)
+  readonly name: string;
+
   @ApiProperty({ minLength: 3, maxLength: 255 })
   @IsString()
   @IsNotEmpty()

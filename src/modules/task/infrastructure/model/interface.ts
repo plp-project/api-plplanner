@@ -16,6 +16,7 @@ export enum taskDurations {
 }
 
 export interface ITaskEntity {
+  name: string;
   description: string;
   status: taskStatuses;
   duration: taskDurations;
