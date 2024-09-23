@@ -19,12 +19,8 @@ export class CategoryService {
   ) {}
 
   async create(userId: number, category: CreateCategoryDTO) {
-    const categoryExists = await this.categoryRepository.findOne({
-      name: ILike(category.name),
-      userId
-    });
-
-    if (categoryExists)
+    const categoryByName = await this.findOneByName(userId, category.name);
+    if (categoryByName)
       throw new ConflictException('Category with this name already exists.');
 
     return await this.categoryRepository.create({ ...category, userId });
@@ -50,8 +46,23 @@ export class CategoryService {
     return category;
   }
 
+  async findOneByName(userId: number, name: string) {
+    const category = await this.categoryRepository.findOne({
+      name: ILike(name),
+      userId
+    });
+    return category;
+  }
+
   async update(userId: number, categoryId: number, data: UpdateCategoryDTO) {
     await this.findOneByUser(userId, categoryId);
+
+    if (data.name) {
+      const categoryByName = await this.findOneByName(userId, data.name);
+      if (categoryByName && categoryByName.id !== categoryId)
+        throw new ConflictException('Category with this name already exists.');
+    }
+
     return await this.categoryRepository.updateById(categoryId, data);
   }
 
