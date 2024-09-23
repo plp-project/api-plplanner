@@ -71,8 +71,9 @@ export class MathHelper {
   }
 
   getRangeOfWeek(date: Date) {
-    const startOfWeek = moment(date).startOf('isoWeek').toDate();
-    const endOfWeek = moment(date).endOf('isoWeek').toDate();
+    // Start the week on Monday
+    const startOfWeek = moment(date).startOf('week').add(1, 'days').toDate();
+    const endOfWeek = moment(startOfWeek).add(6, 'days').toDate();
     return { startOfWeek, endOfWeek };
   }
 

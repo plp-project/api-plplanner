@@ -144,23 +144,36 @@ export class ReportService {
   }
 
   private getMostProductiveWeeks(dates: Date[]) {
-    const keyExtractor = (date: Date) => {
-      const range = this.mathHelper.getRangeOfWeek(date);
-      const weekOfYear = this.mathHelper.getWeekOfYear(date);
-      return { weekOfYear, start: range.startOfWeek, end: range.endOfWeek };
-    };
+    const keyExtractor = (date: Date) => this.mathHelper.getWeekOfYear(date);
+    const weeksMap = this.mathHelper.countOccurrences(dates, keyExtractor);
 
-    const periodsMap = this.mathHelper.countOccurrences(dates, keyExtractor);
-    const sortedPeriods = this.mathHelper.sortMap(periodsMap, 'week');
-    return sortedPeriods;
+    const sortedWeeks = this.mathHelper.sortMap(weeksMap, 'week');
+
+    return sortedWeeks.map((sortedWeek) => {
+      const dateOfWeek = dates.find(
+        (date) => this.mathHelper.getWeekOfYear(date) === sortedWeek.week
+      );
+
+      const { startOfWeek, endOfWeek } =
+        this.mathHelper.getRangeOfWeek(dateOfWeek);
+
+      return {
+        week: {
+          weekOfYear: sortedWeek.week,
+          start: startOfWeek,
+          end: endOfWeek
+        },
+        count: sortedWeek.count
+      };
+    });
   }
 
   private getMostProductiveMonths(dates: Date[]) {
     const keyExtractor = (date: Date) => this.mathHelper.getMonthOfYear(date);
-    const periodsMap = this.mathHelper.countOccurrences(dates, keyExtractor);
+    const monthsMap = this.mathHelper.countOccurrences(dates, keyExtractor);
 
-    const sortedPeriods = this.mathHelper.sortMap(periodsMap, 'month');
-    return sortedPeriods;
+    const sortedMonths = this.mathHelper.sortMap(monthsMap, 'month');
+    return sortedMonths;
   }
 
   private getMostProductiveShifts(tasks: TaskEntity[]) {
