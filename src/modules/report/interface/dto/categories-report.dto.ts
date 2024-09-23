@@ -1,4 +1,7 @@
 export class CategoriesReportInfoDTO {
-  category: string;
+  category: {
+    name: string;
+    color: string;
+  };
   count: number;
 }

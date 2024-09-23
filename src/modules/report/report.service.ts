@@ -140,7 +140,17 @@ export class ReportService {
     );
 
     const sortedCategories = this.mathHelper.sortMap(categoriesMap, 'category');
-    return sortedCategories;
+
+    return sortedCategories.map((sortedCategory) => {
+      const { name, color } = categories.find(
+        (category) => category.name === sortedCategory.category
+      );
+
+      return {
+        category: { name, color },
+        count: sortedCategory.count
+      };
+    });
   }
 
   private getMostProductiveWeeks(dates: Date[]) {
